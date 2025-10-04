@@ -20,6 +20,8 @@ FileETag None
   RewriteRule ^.* - [L,R=404]
   RewriteCond %{REQUEST_URI} ^/(data/ip6?|includes|install/tpl|vendor|assets/tpl|data/cache|data/certs|data/logs)/.* [NC]
   RewriteRule ^.* - [L,R=404]
+  RewriteCond %{REQUEST_URI} ^/(admin)/.*/.*$ [NC]
+  RewriteRule ^.* - [L,R=404]
   RewriteCond %{REQUEST_URI} ^/(install/(css|images)|modules|themes|assets|data/config|data/tmp|uploads)/.*\.((j|a)spx?|(p|s)html|cgi|inc|ini|php|pl|py|sh|sql\.gz|tpl|xml)($|\?|\/) [NC]
   RewriteRule ^.* - [L,R=404]
 </IfModule>
@@ -162,8 +164,6 @@ ErrorDocument 504 /nukeviet/error.php?code=504
 
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule ^admin/(.*)/$ admin/index.php [L]
-  RewriteRule ^admin/$ admin/index.php [L]
   RewriteRule (.*)(/|\.html)$ index.php [L]
 
   RewriteRule (.*)tag/([^?]+)$ index.php [L]
