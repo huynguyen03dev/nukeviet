@@ -22,11 +22,7 @@ $module_version = array(
     'date' => 'Wed, 8 Oct 2014 00:00:00 GMT', // Ngay phat hanh phien ban
     'author' => 'huynguyen', // Tac gia
     'note' => '', // Ghi chu
-    // 'uploads_dir' => array(
-    //     $module_upload,
-    //     $module_upload . '/source',
-    //     $module_upload . '/temp_pic',
-    //     $module_upload . '/topics'
-    // ),
-    // 'files_dir' => array($module_upload . '/topics')
+    'uploads_dir' => array(
+        $module_upload,
+    ),
 );

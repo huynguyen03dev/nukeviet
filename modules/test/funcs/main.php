@@ -4,8 +4,13 @@ if (!defined('NV_MAINFILE')) {
     exit('Stop!!!');
 }
 
-$contents = "Welcome to test module";
+$array = [
+    'id' => 'Chuỗi ABC',
+    'name' => 'Chuỗi XYZ',
+    '123' => 'Chuỗi 123'
+];
 
+$contents = nv_main_test($array);
 
 include (NV_ROOTDIR . "/includes/header.php");
 
