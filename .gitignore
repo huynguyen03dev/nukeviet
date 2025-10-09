@@ -13,6 +13,7 @@
 
 assets/css/*.opt.css
 data/cache/*
+config.php
 /data/config/config_ini.*.php
 /data/config/diagnostic-*.xml
 /data/config/efloodip.php
