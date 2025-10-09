@@ -90,3 +90,5 @@ config.php
 !/uploads/banners/webnhanh_vn.png
 !/data/cache/index.html
 !/data/tmp/index.html
+
+!/docs/config.php
