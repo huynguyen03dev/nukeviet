@@ -49,3 +49,18 @@ $sql_create_module[] = 'CREATE TABLE ' . $db_config['prefix'] . '_' . $module_da
   KEY idx_entry_id (entry_id)
 ) ENGINE=MyISAM";
 
+
+
+// Default configuration for Dictionary module
+$sql_create_module[] = 'INSERT INTO ' . NV_CONFIG_GLOBALTABLE . " (lang, module, config_name, config_value) VALUES
+('" . $lang . "', '" . $module_name . "', 'per_page', '20'),
+('" . $lang . "', '" . $module_name . "', 'search_mode', 'prefix'),
+('" . $lang . "', '" . $module_name . "', 'search_min_length', '2'),
+('" . $lang . "', '" . $module_name . "', 'show_phonetic', '1'),
+('" . $lang . "', '" . $module_name . "', 'show_examples', '1'),
+('" . $lang . "', '" . $module_name . "', 'example_limit', '3'),
+('" . $lang . "', '" . $module_name . "', 'suggest_limit', '10'),
+('" . $lang . "', '" . $module_name . "', 'cache_ttl', '300'),
+('" . $lang . "', '" . $module_name . "', 'allow_submit', '0'),
+('" . $lang . "', '" . $module_name . "', 'admin_review_required', '1'),
+('" . $lang . "', '" . $module_name . "', 'alias_lower', '1')";
