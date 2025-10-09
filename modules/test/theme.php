@@ -13,14 +13,6 @@ if (!defined('NV_IS_MOD_TEST')) {
     exit('Stop!!!');
 }
 
-/**
- * nv_page_main()
- *
- * @param array  $row
- * @param array  $ab_links
- * @param string $content_comment
- * @return string
- */
 function nv_main_test($array)
 {
     global $module_name, $module_info, $meta_property, $client_info, $page_config, $global_config;
