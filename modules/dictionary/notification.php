@@ -19,6 +19,9 @@ $title = isset($data['content']['title']) ? $data['content']['title'] : '';
 if ($data['type'] == 'entry_added') {
     $data['title'] = str_replace('{title}', $title, $nv_Lang->getModule('notif_entry_added'));
     $data['link'] = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $data['module'] . '&amp;' . NV_OP_VARIABLE . '=main';
+} elseif ($data['type'] == 'entry_updated') {
+    $data['title'] = str_replace('{title}', $title, $nv_Lang->getModule('notif_entry_updated'));
+    $data['link'] = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $data['module'] . '&amp;' . NV_OP_VARIABLE . '=main';
 } elseif ($data['type'] == 'entry_deleted') {
     $data['title'] = str_replace('{title}', $title, $nv_Lang->getModule('notif_entry_deleted'));
     $data['link'] = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $data['module'] . '&amp;' . NV_OP_VARIABLE . '=main';

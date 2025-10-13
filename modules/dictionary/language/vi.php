@@ -57,10 +57,14 @@ $lang_module['error_empty_meaning'] = 'Vui lòng nhập nghĩa tiếng Việt';
 $lang_module['success_add'] = 'Thêm từ thành công';
 $lang_module['success_edit'] = 'Cập nhật từ thành công';
 $lang_module['success_delete'] = 'Xóa từ thành công';
+$lang_module['entry_added_success'] = 'Từ "%s" đã được thêm thành công';
+$lang_module['entry_updated_success'] = 'Từ "%s" đã được cập nhật thành công';
+$lang_module['entry_deleted_success'] = 'Từ "%s" đã được xóa thành công';
 $lang_module['errorsave'] = 'Đã xảy ra lỗi khi lưu dữ liệu';
 
 // Notifications
 $lang_module['notif_entry_added'] = 'Đã thêm từ mới: {title}';
+$lang_module['notif_entry_updated'] = 'Đã cập nhật từ: {title}';
 $lang_module['notif_entry_deleted'] = 'Đã xóa từ: {title}';
 
 // Common

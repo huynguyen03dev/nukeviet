@@ -1,4 +1,12 @@
 <!-- BEGIN: main -->
+<!-- BEGIN: success_toast -->
+<script type="text/javascript">
+$(document).ready(function() {
+    nvToast('{SUCCESS_MESSAGE}', 'success');
+});
+</script>
+<!-- END: success_toast -->
+
 <div class="table-responsive">
     <table class="table table-striped table-bordered table-hover">
         <caption><em class="fa fa-file-text-o">&nbsp;</em>{LANG.list}</caption>

@@ -57,10 +57,14 @@ $lang_module['error_empty_meaning'] = 'Please enter the Vietnamese meaning';
 $lang_module['success_add'] = 'Entry added successfully';
 $lang_module['success_edit'] = 'Entry updated successfully';
 $lang_module['success_delete'] = 'Entry deleted successfully';
+$lang_module['entry_added_success'] = 'Entry "%s" has been added successfully';
+$lang_module['entry_updated_success'] = 'Entry "%s" has been updated successfully';
+$lang_module['entry_deleted_success'] = 'Entry "%s" has been deleted successfully';
 $lang_module['errorsave'] = 'An error occurred while saving';
 
 // Notifications
 $lang_module['notif_entry_added'] = 'New dictionary entry added: {title}';
+$lang_module['notif_entry_updated'] = 'Dictionary entry updated: {title}';
 $lang_module['notif_entry_deleted'] = 'Dictionary entry deleted: {title}';
 
 // Common

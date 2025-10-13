@@ -13,17 +13,42 @@ if (!defined('NV_IS_DICTIONARY_ADMIN')) {
     exit('Stop!!!');
 }
 
-$page_title = $nv_Lang->getModule('add');
+$page_title = $nv_Lang->getModule('edit');
 
-// Default form data
-$data = [
-    'headword' => '',
-    'slug' => '',
-    'pos' => '',
-    'phonetic' => '',
-    'meaning_vi' => '',
-    'notes' => ''
-];
+// Get entry ID from both GET and POST
+$id = $nv_Request->get_int('id', 'get,post', 0);
+
+if ($id <= 0) {
+    nv_redirect_location(
+        NV_BASE_ADMINURL . 'index.php?'
+        . NV_LANG_VARIABLE . '=' . NV_LANG_DATA
+        . '&' . NV_NAME_VARIABLE . '=' . $module_name
+        . '&' . NV_OP_VARIABLE . '=main'
+    );
+}
+
+// Fetch existing entry
+$sql = 'SELECT * FROM ' . NV_DICTIONARY_GLOBALTABLE . '_entries WHERE id = :id';
+$stmt = $db->prepare($sql);
+$stmt->bindParam(':id', $id, PDO::PARAM_INT);
+$stmt->execute();
+$data = $stmt->fetch();
+
+if (!$data) {
+    nv_redirect_location(
+        NV_BASE_ADMINURL . 'index.php?'
+        . NV_LANG_VARIABLE . '=' . NV_LANG_DATA
+        . '&' . NV_NAME_VARIABLE . '=' . $module_name
+        . '&' . NV_OP_VARIABLE . '=main'
+    );
+}
+
+// Fetch existing examples
+$sql = 'SELECT * FROM ' . NV_DICTIONARY_GLOBALTABLE . '_examples WHERE entry_id = :entry_id ORDER BY sort ASC';
+$stmt = $db->prepare($sql);
+$stmt->bindParam(':entry_id', $id, PDO::PARAM_INT);
+$stmt->execute();
+$existing_examples = $stmt->fetchAll();
 
 $errors = [];
 
@@ -69,7 +94,7 @@ if ($nv_Request->isset_request('submit', 'post')) {
             NV_BASE_ADMINURL . 'index.php?'
             . NV_LANG_VARIABLE . '=' . NV_LANG_DATA
             . '&' . NV_NAME_VARIABLE . '=' . $module_name
-            . '&' . NV_OP_VARIABLE . '=entry_add'
+            . '&' . NV_OP_VARIABLE . '=entry_edit&id=' . $id
         );
     }
 
@@ -80,13 +105,14 @@ if ($nv_Request->isset_request('submit', 'post')) {
     // Normalize slug
     $data['slug'] = strtolower($data['slug']);
 
-    // Ensure slug unique
+    // Ensure slug unique (excluding current entry)
     if ($data['slug'] !== '') {
         $base_slug = $data['slug'];
         $i = 1;
-        $stmt = $db->prepare('SELECT COUNT(*) FROM ' . NV_DICTIONARY_GLOBALTABLE . '_entries WHERE slug = :slug');
+        $stmt = $db->prepare('SELECT COUNT(*) FROM ' . NV_DICTIONARY_GLOBALTABLE . '_entries WHERE slug = :slug AND id != :id');
         while (true) {
             $stmt->bindValue(':slug', $data['slug'], PDO::PARAM_STR);
+            $stmt->bindValue(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
             $exists = (int) $stmt->fetchColumn();
             if ($exists === 0) {
@@ -97,16 +123,21 @@ if ($nv_Request->isset_request('submit', 'post')) {
         }
     }
 
-    // Proceed with saving (validation already passed)
+    // Proceed with updating
     if (true) {
         try {
-            $created_at = NV_CURRENTTIME;
             $updated_at = NV_CURRENTTIME;
 
-            // Insert entry
-            $sql = 'INSERT INTO ' . NV_DICTIONARY_GLOBALTABLE . '_entries
-                (headword, slug, pos, phonetic, meaning_vi, notes, created_at, updated_at)
-                VALUES (:headword, :slug, :pos, :phonetic, :meaning_vi, :notes, :created_at, :updated_at)';
+            // Update entry
+            $sql = 'UPDATE ' . NV_DICTIONARY_GLOBALTABLE . '_entries SET
+                headword = :headword,
+                slug = :slug,
+                pos = :pos,
+                phonetic = :phonetic,
+                meaning_vi = :meaning_vi,
+                notes = :notes,
+                updated_at = :updated_at
+                WHERE id = :id';
             $stmt = $db->prepare($sql);
             $stmt->bindParam(':headword', $data['headword'], PDO::PARAM_STR);
             $stmt->bindParam(':slug', $data['slug'], PDO::PARAM_STR);
@@ -114,13 +145,14 @@ if ($nv_Request->isset_request('submit', 'post')) {
             $stmt->bindParam(':phonetic', $data['phonetic'], PDO::PARAM_STR);
             $stmt->bindParam(':meaning_vi', $data['meaning_vi'], PDO::PARAM_STR);
             $stmt->bindParam(':notes', $data['notes'], PDO::PARAM_STR);
-            $stmt->bindParam(':created_at', $created_at, PDO::PARAM_INT);
             $stmt->bindParam(':updated_at', $updated_at, PDO::PARAM_INT);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
 
-            $entry_id = (int) $db->lastInsertId();
+            // Delete old examples
+            $db->query('DELETE FROM ' . NV_DICTIONARY_GLOBALTABLE . '_examples WHERE entry_id = ' . $id);
 
-            // Insert examples (if provided)
+            // Insert new examples (if provided)
             $ex_sentences = isset($_POST['ex_sentence_en']) && is_array($_POST['ex_sentence_en']) ? $_POST['ex_sentence_en'] : [];
             $ex_trans = isset($_POST['ex_translation_vi']) && is_array($_POST['ex_translation_vi']) ? $_POST['ex_translation_vi'] : [];
 
@@ -138,18 +170,18 @@ if ($nv_Request->isset_request('submit', 'post')) {
                         continue;
                     }
                     $sort++;
-                    $stmt_ex->bindParam(':entry_id', $entry_id, PDO::PARAM_INT);
+                    $stmt_ex->bindParam(':entry_id', $id, PDO::PARAM_INT);
                     $stmt_ex->bindParam(':sentence_en', $sentence, PDO::PARAM_STR);
                     $stmt_ex->bindParam(':translation_vi', $translation, PDO::PARAM_STR);
                     $stmt_ex->bindParam(':sort', $sort, PDO::PARAM_INT);
-                    $stmt_ex->bindParam(':created_at', $created_at, PDO::PARAM_INT);
+                    $stmt_ex->bindParam(':created_at', $updated_at, PDO::PARAM_INT);
                     $stmt_ex->execute();
                 }
             }
 
             // Store success message in session to show toast on next page
             $_SESSION['dictionary_success_message'] = sprintf(
-                $nv_Lang->getModule('entry_added_success'),
+                $nv_Lang->getModule('entry_updated_success'),
                 $data['headword']
             );
 
@@ -173,7 +205,7 @@ if ($nv_Request->isset_request('submit', 'post')) {
                 NV_BASE_ADMINURL . 'index.php?'
                 . NV_LANG_VARIABLE . '=' . NV_LANG_DATA
                 . '&' . NV_NAME_VARIABLE . '=' . $module_name
-                . '&' . NV_OP_VARIABLE . '=entry_add'
+                . '&' . NV_OP_VARIABLE . '=entry_edit&id=' . $id
             );
         }
     }
@@ -181,7 +213,7 @@ if ($nv_Request->isset_request('submit', 'post')) {
 
 // Render form
 $xtpl = new XTemplate(
-    'entry_add.tpl',
+    'entry_edit.tpl',
     NV_ROOTDIR . '/themes/' . $global_config['admin_theme'] . '/modules/' . $module_file
 );
 $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
@@ -192,12 +224,25 @@ $xtpl->assign('NV_LANG_DATA', NV_LANG_DATA);
 $xtpl->assign('NV_NAME_VARIABLE', NV_NAME_VARIABLE);
 $xtpl->assign('NV_OP_VARIABLE', NV_OP_VARIABLE);
 $xtpl->assign('MODULE_NAME', $module_name);
-$xtpl->assign('OP', 'entry_add');
+$xtpl->assign('OP', 'entry_edit');
+$xtpl->assign('ID', $id);
 $xtpl->assign('CHECKSS', md5(NV_CHECK_SESSION));
 
 // Prefill data
 foreach ($data as $k => $v) {
     $xtpl->assign(strtoupper($k), htmlspecialchars($v, ENT_QUOTES, 'UTF-8'));
+}
+
+// Render existing examples
+if (!empty($existing_examples)) {
+    foreach ($existing_examples as $idx => $example) {
+        $xtpl->assign('EXAMPLE', [
+            'num' => $idx + 1,
+            'sentence_en' => htmlspecialchars($example['sentence_en'], ENT_QUOTES, 'UTF-8'),
+            'translation_vi' => htmlspecialchars($example['translation_vi'], ENT_QUOTES, 'UTF-8')
+        ]);
+        $xtpl->parse('main.example');
+    }
 }
 
 if (!empty($errors)) {
@@ -214,4 +259,3 @@ $contents = $xtpl->text('main');
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_admin_theme($contents);
 include NV_ROOTDIR . '/includes/footer.php';
-

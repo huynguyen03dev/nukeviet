@@ -16,7 +16,8 @@ if (!defined('NV_ADMIN') or !defined('NV_MAINFILE') or !defined('NV_IS_MODADMIN'
 $allow_func = [
     'main',
     'entry_add',
-    'entry_list'
+    'entry_list',
+    'entry_edit'
 ];
 
 define('NV_IS_DICTIONARY_ADMIN', true);

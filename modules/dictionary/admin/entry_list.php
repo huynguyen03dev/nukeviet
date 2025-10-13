@@ -15,11 +15,18 @@ if (!defined('NV_IS_DICTIONARY_ADMIN')) {
 
 $page_title = $nv_Lang->getModule('list');
 
+// Check for success message from session (flash message)
+$success_message = '';
+if (isset($_SESSION['dictionary_success_message'])) {
+    $success_message = $_SESSION['dictionary_success_message'];
+    unset($_SESSION['dictionary_success_message']);
+}
+
 // Handle delete request
 if ($nv_Request->isset_request('delete', 'post')) {
     $id = $nv_Request->get_int('id', 'post', 0);
     if ($id > 0) {
-        // Get entry title before deleting for notification
+        // Get entry title before deleting for toast notification
         $headword = $db->query('SELECT headword FROM ' . NV_DICTIONARY_GLOBALTABLE . '_entries WHERE id = ' . $id)->fetchColumn();
         
         // Delete examples first
@@ -29,19 +36,10 @@ if ($nv_Request->isset_request('delete', 'post')) {
         $result = $db->query('DELETE FROM ' . NV_DICTIONARY_GLOBALTABLE . '_entries WHERE id = ' . $id);
         
         if ($result && $headword) {
-            // Insert notification for all admins
-            nv_insert_notification(
-                $module_name,              // Module: 'dictionary'
-                'entry_deleted',           // Notification type
-                [
-                    'entry_id' => $id,
-                    'title' => $headword
-                ],                         // Content data
-                $id,                       // Object ID
-                0,                         // Send to: 0 = all admins
-                $admin_info['admin_id'],   // From: current admin
-                1,                         // Area: 1 = admin area only
-                0                          // View level: 0 = all admins
+            // Store success message in session to show toast on next page
+            $_SESSION['dictionary_success_message'] = sprintf(
+                $nv_Lang->getModule('entry_deleted_success'),
+                $headword
             );
             
             die('OK');
@@ -70,6 +68,12 @@ $xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
 $xtpl->assign('MODULE_NAME', $module_name);
 $xtpl->assign('OP', $op);
 $xtpl->assign('ADD_URL', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=entry_add');
+
+// Pass success message to template
+if (!empty($success_message)) {
+    $xtpl->assign('SUCCESS_MESSAGE', htmlspecialchars($success_message, ENT_QUOTES, 'UTF-8'));
+    $xtpl->parse('main.success_toast');
+}
 
 $i = ($page - 1) * $per_page;
 if ($total > 0) {
