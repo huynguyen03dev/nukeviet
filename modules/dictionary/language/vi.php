@@ -59,6 +59,10 @@ $lang_module['success_edit'] = 'Cập nhật từ thành công';
 $lang_module['success_delete'] = 'Xóa từ thành công';
 $lang_module['errorsave'] = 'Đã xảy ra lỗi khi lưu dữ liệu';
 
+// Notifications
+$lang_module['notif_entry_added'] = 'Đã thêm từ mới: {title}';
+$lang_module['notif_entry_deleted'] = 'Đã xóa từ: {title}';
+
 // Common
 $lang_module['example'] = 'Ví dụ';
 $lang_module['search'] = 'Tìm kiếm';

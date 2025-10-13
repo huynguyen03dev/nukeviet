@@ -147,6 +147,21 @@ if ($nv_Request->isset_request('submit', 'post')) {
                 }
             }
 
+            // Insert notification for all admins
+            nv_insert_notification(
+                $module_name,              // Module: 'dictionary'
+                'entry_added',             // Notification type
+                [
+                    'entry_id' => $entry_id,
+                    'title' => $data['headword']
+                ],                         // Content data
+                $entry_id,                 // Object ID
+                0,                         // Send to: 0 = all admins
+                $admin_info['admin_id'],   // From: current admin
+                1,                         // Area: 1 = admin area only
+                0                          // View level: 0 = all admins can see
+            );
+
             // Clear any session data
             unset($_SESSION['dictionary_form_errors']);
             unset($_SESSION['dictionary_form_data']);

@@ -19,11 +19,31 @@ $page_title = $nv_Lang->getModule('list');
 if ($nv_Request->isset_request('delete', 'post')) {
     $id = $nv_Request->get_int('id', 'post', 0);
     if ($id > 0) {
+        // Get entry title before deleting for notification
+        $headword = $db->query('SELECT headword FROM ' . NV_DICTIONARY_GLOBALTABLE . '_entries WHERE id = ' . $id)->fetchColumn();
+        
         // Delete examples first
         $db->query('DELETE FROM ' . NV_DICTIONARY_GLOBALTABLE . '_examples WHERE entry_id = ' . $id);
+        
         // Delete entry
         $result = $db->query('DELETE FROM ' . NV_DICTIONARY_GLOBALTABLE . '_entries WHERE id = ' . $id);
-        if ($result) {
+        
+        if ($result && $headword) {
+            // Insert notification for all admins
+            nv_insert_notification(
+                $module_name,              // Module: 'dictionary'
+                'entry_deleted',           // Notification type
+                [
+                    'entry_id' => $id,
+                    'title' => $headword
+                ],                         // Content data
+                $id,                       // Object ID
+                0,                         // Send to: 0 = all admins
+                $admin_info['admin_id'],   // From: current admin
+                1,                         // Area: 1 = admin area only
+                0                          // View level: 0 = all admins
+            );
+            
             die('OK');
         }
     }

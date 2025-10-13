@@ -59,6 +59,10 @@ $lang_module['success_edit'] = 'Entry updated successfully';
 $lang_module['success_delete'] = 'Entry deleted successfully';
 $lang_module['errorsave'] = 'An error occurred while saving';
 
+// Notifications
+$lang_module['notif_entry_added'] = 'New dictionary entry added: {title}';
+$lang_module['notif_entry_deleted'] = 'Dictionary entry deleted: {title}';
+
 // Common
 $lang_module['example'] = 'Example';
 $lang_module['search'] = 'Search';
