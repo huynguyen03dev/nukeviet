@@ -15,8 +15,11 @@ if (!defined('NV_ADMIN') or !defined('NV_MAINFILE') or !defined('NV_IS_MODADMIN'
 
 $allow_func = [
     'main',
+    'entry_add',
+    'entry_list'
 ];
 
 define('NV_IS_DICTIONARY_ADMIN', true);
+define('NV_DICTIONARY_GLOBALTABLE', $db_config['prefix'] . '_' . $module_data);
 
 

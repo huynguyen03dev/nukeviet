@@ -1,0 +1,133 @@
+/**
+ * Dictionary Module - Admin Styles
+ * NukeViet CMS
+ */
+
+/* Examples Wrapper */
+#examples-wrapper {
+  min-height: 40px;
+}
+
+/* Examples Container Styles */
+#examples-container {
+  margin-bottom: 15px;
+}
+
+#examples-container:empty {
+  margin-bottom: 0;
+}
+
+/* Add Button Wrapper - Better alignment */
+.examples-add-button-wrapper {
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+}
+
+#examples-container .example-item {
+  background: #f9f9f9;
+  border: 1px solid #e3e3e3;
+  border-radius: 4px;
+  padding: 15px;
+  margin-bottom: 15px;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+#examples-container .example-item:hover {
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+#examples-container .example-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e3e3e3;
+}
+
+#examples-container .example-number {
+  font-weight: 600;
+  color: #555;
+  font-size: 14px;
+}
+
+#examples-container .example-item .example-row {
+  margin-bottom: 12px;
+}
+
+#examples-container .example-item .example-row:last-child {
+  margin-bottom: 0;
+}
+
+#examples-container .example-item .example-row label {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 5px;
+  display: block;
+  font-size: 13px;
+}
+
+#examples-container .example-item .example-row input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+#examples-container .example-item .example-row input:focus {
+  border-color: #66afe9;
+  outline: none;
+  box-shadow: 0 0 5px rgba(102, 175, 233, 0.3);
+}
+
+#examples-container .example-remove-btn {
+  padding: 5px 12px;
+  border: 1px solid #d9534f;
+  background: #fff;
+  color: #d9534f;
+  border-radius: 3px;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: bold;
+}
+
+#examples-container .example-remove-btn:hover,
+#examples-container .example-remove-btn:focus {
+  color: #fff;
+  background: #d9534f;
+  border-color: #d43f3a;
+  text-decoration: none;
+  outline: none;
+  transform: scale(1.05);
+}
+
+#btn-add-example {
+  transition: all 0.2s ease;
+}
+
+#btn-add-example:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.example-item-enter {
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+

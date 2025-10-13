@@ -13,8 +13,5 @@ if (!defined('NV_IS_DICTIONARY_ADMIN')) {
     exit('Stop!!!');
 }
 
-$contents = "Dictionary admin main";
-
-include NV_ROOTDIR . '/includes/header.php';
-echo nv_admin_theme($contents);
-include NV_ROOTDIR . '/includes/footer.php';
+// Redirect to entry_list as the default page
+nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=entry_list');

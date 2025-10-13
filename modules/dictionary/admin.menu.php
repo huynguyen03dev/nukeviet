@@ -13,3 +13,9 @@ if (!defined('NV_ADMIN')) {
     exit('Stop!!!');
 }
 
+$submenu['entry_list'] = $nv_Lang->getModule('list');
+$submenu['entry_add'] = $nv_Lang->getModule('add');
+
+$allow_func[] = 'main';
+$allow_func[] = 'entry_list';
+$allow_func[] = 'entry_add';

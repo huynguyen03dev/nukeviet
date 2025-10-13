@@ -1,3 +1,7 @@
+# Cursor ignore
+.cursor
+AGENTS.md
+
 # Base ignore
 /.buildpath
 /.project
