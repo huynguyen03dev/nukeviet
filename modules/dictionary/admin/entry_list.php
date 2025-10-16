@@ -52,12 +52,24 @@ if ($nv_Request->isset_request('delete', 'post')) {
 $page = $nv_Request->get_int('page', 'get', 1);
 $per_page = 30;
 
+// Search functionality
+$search = $nv_Request->get_title('search', 'get', '');
+
+// Build WHERE clause for search
+$where = '';
+if (!empty($search)) {
+    $search_escaped = $db->quote('%' . $search . '%');
+    $where = ' WHERE headword LIKE ' . $search_escaped . ' 
+              OR meaning_vi LIKE ' . $search_escaped . ' 
+              OR pos LIKE ' . $search_escaped;
+}
+
 // Get total entries
-$sql = 'SELECT COUNT(*) FROM ' . NV_DICTIONARY_GLOBALTABLE . '_entries';
+$sql = 'SELECT COUNT(*) FROM ' . NV_DICTIONARY_GLOBALTABLE . '_entries' . $where;
 $total = $db->query($sql)->fetchColumn();
 
 // Get entries
-$sql = 'SELECT * FROM ' . NV_DICTIONARY_GLOBALTABLE . '_entries 
+$sql = 'SELECT * FROM ' . NV_DICTIONARY_GLOBALTABLE . '_entries' . $where . '
         ORDER BY created_at DESC 
         LIMIT ' . (($page - 1) * $per_page) . ', ' . $per_page;
 $result = $db->query($sql);
@@ -65,9 +77,15 @@ $result = $db->query($sql);
 $xtpl = new XTemplate('entry_list.tpl', NV_ROOTDIR . '/themes/' . $global_config['admin_theme'] . '/modules/' . $module_file);
 $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
 $xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
+$xtpl->assign('NV_BASE_ADMINURL', NV_BASE_ADMINURL);
+$xtpl->assign('NV_LANG_VARIABLE', NV_LANG_VARIABLE);
+$xtpl->assign('NV_LANG_DATA', NV_LANG_DATA);
+$xtpl->assign('NV_NAME_VARIABLE', NV_NAME_VARIABLE);
+$xtpl->assign('NV_OP_VARIABLE', NV_OP_VARIABLE);
 $xtpl->assign('MODULE_NAME', $module_name);
 $xtpl->assign('OP', $op);
 $xtpl->assign('ADD_URL', NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=entry_add');
+$xtpl->assign('SEARCH', htmlspecialchars($search, ENT_QUOTES, 'UTF-8'));
 
 // Pass success message to template
 if (!empty($success_message)) {
@@ -107,6 +125,9 @@ if ($total > 0) {
 // Generate page
 if ($total > $per_page) {
     $base_url = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op;
+    if (!empty($search)) {
+        $base_url .= '&amp;search=' . urlencode($search);
+    }
     $generate_page = nv_generate_page($base_url, $total, $per_page, $page);
     if (!empty($generate_page)) {
         $xtpl->assign('NV_GENERATE_PAGE', $generate_page);

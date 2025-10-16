@@ -76,3 +76,7 @@ $lang_module['created_at'] = 'Created';
 $lang_module['updated_at'] = 'Updated';
 $lang_module['no_data'] = 'No data available';
 
+// Search
+$lang_module['search_placeholder'] = 'Search by headword, meaning, or part of speech...';
+$lang_module['searching'] = 'Searching...';
+

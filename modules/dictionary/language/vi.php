@@ -77,3 +77,7 @@ $lang_module['updated_at'] = 'Cập nhật';
 $lang_module['add_time'] = 'Thời gian đăng';
 $lang_module['no_data'] = 'Không có dữ liệu';
 
+// Search
+$lang_module['search_placeholder'] = 'Tìm kiếm theo từ, nghĩa hoặc từ loại...';
+$lang_module['searching'] = 'Đang tìm kiếm...';
+

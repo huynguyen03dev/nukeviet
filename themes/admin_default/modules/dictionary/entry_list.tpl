@@ -7,6 +7,28 @@ $(document).ready(function() {
 </script>
 <!-- END: success_toast -->
 
+<div class="well">
+    <form action="{NV_BASE_ADMINURL}index.php" method="get">
+        <input type="hidden" name="{NV_LANG_VARIABLE}" value="{NV_LANG_DATA}">
+        <input type="hidden" name="{NV_NAME_VARIABLE}" value="{MODULE_NAME}">
+        <input type="hidden" name="{NV_OP_VARIABLE}" value="{OP}">
+        
+        <div class="form-group">
+            <div class="input-group">
+                <span class="input-group-addon">
+                    <i class="fa fa-search"></i>
+                </span>
+                <input type="text" name="search" class="form-control" placeholder="{LANG.search_placeholder}" value="{SEARCH}" autofocus>
+                <span class="input-group-btn">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-search"></i> {LANG.search}
+                    </button>
+                </span>
+            </div>
+        </div>
+    </form>
+</div>
+
 <div class="table-responsive">
     <table class="table table-striped table-bordered table-hover">
         <caption><em class="fa fa-file-text-o">&nbsp;</em>{LANG.list}</caption>
@@ -72,18 +94,4 @@ $(document).ready(function() {
 <div class="text-center">{NV_GENERATE_PAGE}</div>
 <!-- END: page -->
 
-<script type="text/javascript">
-function nv_delete_entry(id) {
-    if (confirm(nv_is_del_confirm[0])) {
-        $.post(script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=entry_list&nocache=' + new Date().getTime(), 'delete=1&id=' + id, function(res) {
-            if (res == 'OK') {
-                window.location.href = window.location.href;
-            } else {
-                alert(res);
-            }
-        });
-    }
-    return false;
-}
-</script>
 <!-- END: main -->
