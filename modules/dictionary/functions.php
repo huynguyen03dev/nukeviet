@@ -15,3 +15,6 @@ if (!defined('NV_SYSTEM')) {
 
 define('NV_IS_MOD_DICTIONARY', true);
 
+// Define global table prefix for the dictionary module
+define('NV_DICTIONARY_GLOBALTABLE', $db_config['prefix'] . '_' . $module_data);
+

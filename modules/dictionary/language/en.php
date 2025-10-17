@@ -80,3 +80,10 @@ $lang_module['no_data'] = 'No data available';
 $lang_module['search_placeholder'] = 'Search by headword, meaning, or part of speech...';
 $lang_module['searching'] = 'Searching...';
 
+// Main page
+$lang_module['main_intro'] = 'Search for English words to see Vietnamese meanings and examples.';
+$lang_module['type_to_search'] = 'Type a word to search...';
+$lang_module['no_results'] = 'No words found matching your search';
+$lang_module['loading'] = 'Loading...';
+$lang_module['select_word'] = 'Select a word from the suggestions';
+

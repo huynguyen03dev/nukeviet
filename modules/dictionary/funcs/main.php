@@ -13,7 +13,103 @@ if (!defined('NV_IS_MOD_DICTIONARY')) {
     exit('Stop!!!');
 }
 
-$contents = 'Dictionary site main';
+$page_title = $module_info['site_title'];
+$key_words = $module_info['keywords'];
+
+// Handle AJAX requests
+$action = $nv_Request->get_title('action', 'get', '');
+
+if ($action == 'autocomplete') {
+    // Autocomplete search
+    $q = $nv_Request->get_title('q', 'get', '');
+    
+    if (empty($q)) {
+        nv_jsonOutput([
+            'status' => 'error',
+            'data' => []
+        ]);
+    }
+    
+    $q = $db->dblikeescape($q);
+    
+    $sql = 'SELECT id, headword, pos FROM ' . NV_DICTIONARY_GLOBALTABLE . '_entries 
+            WHERE headword LIKE :keyword 
+            ORDER BY headword ASC 
+            LIMIT 10';
+    
+    $sth = $db->prepare($sql);
+    $sth->bindValue(':keyword', $q . '%', PDO::PARAM_STR);
+    $sth->execute();
+    
+    $results = [];
+    while ($row = $sth->fetch()) {
+        $results[] = [
+            'id' => (int) $row['id'],
+            'headword' => $row['headword'],
+            'pos' => $row['pos']
+        ];
+    }
+    
+    nv_jsonOutput([
+        'status' => 'success',
+        'data' => $results
+    ]);
+}
+
+if ($action == 'getword') {
+    // Get word details
+    $id = $nv_Request->get_int('id', 'get', 0);
+    
+    if (empty($id)) {
+        nv_jsonOutput([
+            'status' => 'error',
+            'message' => 'Invalid word ID'
+        ]);
+    }
+    
+    // Get entry details
+    $sql = 'SELECT * FROM ' . NV_DICTIONARY_GLOBALTABLE . '_entries WHERE id = ' . $id;
+    $entry = $db->query($sql)->fetch();
+    
+    if (empty($entry)) {
+        nv_jsonOutput([
+            'status' => 'error',
+            'message' => 'Word not found'
+        ]);
+    }
+    
+    // Get examples
+    $sql = 'SELECT id, sentence_en, translation_vi FROM ' . NV_DICTIONARY_GLOBALTABLE . '_examples 
+            WHERE entry_id = ' . $id . ' 
+            ORDER BY sort ASC, id ASC';
+    $result = $db->query($sql);
+    
+    $examples = [];
+    while ($row = $result->fetch()) {
+        $examples[] = [
+            'sentence_en' => $row['sentence_en'],
+            'translation_vi' => $row['translation_vi']
+        ];
+    }
+    
+    nv_jsonOutput([
+        'status' => 'success',
+        'data' => [
+            'id' => (int) $entry['id'],
+            'headword' => $entry['headword'],
+            'slug' => $entry['slug'],
+            'pos' => $entry['pos'],
+            'phonetic' => $entry['phonetic'],
+            'meaning_vi' => $entry['meaning_vi'],
+            'notes' => $entry['notes'],
+            'examples' => $examples
+        ]
+    ]);
+}
+
+// Default view - display search interface
+$intro_text = $nv_Lang->getModule('main_intro');
+$contents = nv_dictionary_main($intro_text);
 
 include NV_ROOTDIR . '/includes/header.php';
 echo nv_site_theme($contents);

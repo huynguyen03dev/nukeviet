@@ -81,3 +81,10 @@ $lang_module['no_data'] = 'Không có dữ liệu';
 $lang_module['search_placeholder'] = 'Tìm kiếm theo từ, nghĩa hoặc từ loại...';
 $lang_module['searching'] = 'Đang tìm kiếm...';
 
+// Main page
+$lang_module['main_intro'] = 'Tìm kiếm từ tiếng Anh để xem nghĩa tiếng Việt và ví dụ.';
+$lang_module['type_to_search'] = 'Nhập từ để tìm kiếm...';
+$lang_module['no_results'] = 'Không tìm thấy từ nào phù hợp';
+$lang_module['loading'] = 'Đang tải...';
+$lang_module['select_word'] = 'Chọn một từ từ danh sách gợi ý';
+
