@@ -63,13 +63,13 @@ if ($nv_Request->isset_request('submit', 'post')) {
 
     // Validate headword audio file (if uploaded)
     $headword_audio_filename = null;
-    if (isset($_FILES['headword_audio']) && $_FILES['headword_audio']['error'] !== UPLOAD_ERR_NO_FILE) {
-        if ($_FILES['headword_audio']['error'] === UPLOAD_ERR_OK) {
+    if (isset($_FILES['audio']) && $_FILES['audio']['error'] !== UPLOAD_ERR_NO_FILE) {
+        if ($_FILES['audio']['error'] === UPLOAD_ERR_OK) {
             $allowed_mime_types = ['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/x-wav'];
             $max_file_size = 5 * 1024 * 1024; // 5MB
             
-            $file_mime = $_FILES['headword_audio']['type'];
-            $file_size = $_FILES['headword_audio']['size'];
+            $file_mime = $_FILES['audio']['type'];
+            $file_size = $_FILES['audio']['size'];
             
             // Validate MIME type
             if (!in_array($file_mime, $allowed_mime_types, true)) {
@@ -164,11 +164,35 @@ if ($nv_Request->isset_request('submit', 'post')) {
         try {
             $created_at = NV_CURRENTTIME;
             $updated_at = NV_CURRENTTIME;
+            
+            // Handle headword audio file upload BEFORE insert
+            $headword_audio_filename = null;
+            if (isset($_FILES['audio']) && $_FILES['audio']['error'] === UPLOAD_ERR_OK) {
+                // Ensure upload directories exist
+                $targetDir = NV_ROOTDIR . '/uploads/' . $module_name . '/audio';
+                if (!is_dir($targetDir)) {
+                    if (!is_dir(NV_ROOTDIR . '/uploads/' . $module_name)) {
+                        nv_mkdir(NV_ROOTDIR . '/uploads', $module_name);
+                    }
+                    nv_mkdir(NV_ROOTDIR . '/uploads/' . $module_name, 'audio');
+                }
 
-            // Insert entry
+                $file_ext = strtolower(pathinfo($_FILES['audio']['name'], PATHINFO_EXTENSION));
+                // Use timestamp + random for temporary filename until we get entry_id
+                $temp_filename = 'temp_' . time() . '_' . mt_rand(1000, 9999) . '.' . $file_ext;
+                $temp_upload_path = $targetDir . '/' . $temp_filename;
+                
+                if (move_uploaded_file($_FILES['audio']['tmp_name'], $temp_upload_path)) {
+                    $headword_audio_filename = $temp_filename; // Will be renamed after INSERT
+                } else {
+                    $errors[] = $nv_Lang->getModule('error_audio_upload');
+                }
+            }
+
+            // Insert entry WITH audio_file
             $sql = 'INSERT INTO ' . NV_DICTIONARY_GLOBALTABLE . '_entries
-                (headword, slug, pos, phonetic, meaning_vi, notes, created_at, updated_at)
-                VALUES (:headword, :slug, :pos, :phonetic, :meaning_vi, :notes, :created_at, :updated_at)';
+                (headword, slug, pos, phonetic, meaning_vi, notes, audio_file, created_at, updated_at)
+                VALUES (:headword, :slug, :pos, :phonetic, :meaning_vi, :notes, :audio_file, :created_at, :updated_at)';
             $stmt = $db->prepare($sql);
             $stmt->bindParam(':headword', $data['headword'], PDO::PARAM_STR);
             $stmt->bindParam(':slug', $data['slug'], PDO::PARAM_STR);
@@ -176,27 +200,31 @@ if ($nv_Request->isset_request('submit', 'post')) {
             $stmt->bindParam(':phonetic', $data['phonetic'], PDO::PARAM_STR);
             $stmt->bindParam(':meaning_vi', $data['meaning_vi'], PDO::PARAM_STR);
             $stmt->bindParam(':notes', $data['notes'], PDO::PARAM_STR);
+            $stmt->bindParam(':audio_file', $headword_audio_filename, PDO::PARAM_STR);
             $stmt->bindParam(':created_at', $created_at, PDO::PARAM_INT);
             $stmt->bindParam(':updated_at', $updated_at, PDO::PARAM_INT);
             $stmt->execute();
 
             $entry_id = (int) $db->lastInsertId();
-
-            // Handle headword audio file upload
-            if (isset($_FILES['headword_audio']) && $_FILES['headword_audio']['error'] === UPLOAD_ERR_OK) {
-                $file_ext = strtolower(pathinfo($_FILES['headword_audio']['name'], PATHINFO_EXTENSION));
-                $headword_audio_filename = $entry_id . '_headword.' . $file_ext;
-                $upload_path = NV_ROOTDIR . '/uploads/' . $module_name . '/audio/' . $headword_audio_filename;
+            
+            // Rename headword audio file to proper name with entry_id
+            if ($headword_audio_filename !== null) {
+                $targetDir = NV_ROOTDIR . '/uploads/' . $module_name . '/audio';
+                $old_path = $targetDir . '/' . $headword_audio_filename;
+                $file_ext = strtolower(pathinfo($headword_audio_filename, PATHINFO_EXTENSION));
+                $final_filename = $entry_id . '_headword.' . $file_ext;
+                $new_path = $targetDir . '/' . $final_filename;
                 
-                if (move_uploaded_file($_FILES['headword_audio']['tmp_name'], $upload_path)) {
-                    // Update entry with audio filename
+                if (rename($old_path, $new_path)) {
+                    // Update database with final filename
                     $sql_update = 'UPDATE ' . NV_DICTIONARY_GLOBALTABLE . '_entries SET audio_file = :audio_file WHERE id = :id';
                     $stmt_update = $db->prepare($sql_update);
-                    $stmt_update->bindParam(':audio_file', $headword_audio_filename, PDO::PARAM_STR);
+                    $stmt_update->bindParam(':audio_file', $final_filename, PDO::PARAM_STR);
                     $stmt_update->bindParam(':id', $entry_id, PDO::PARAM_INT);
                     $stmt_update->execute();
                 } else {
-                    $errors[] = $nv_Lang->getModule('error_audio_upload');
+                    // If rename fails, keep the temp filename - it's already in DB and works
+                    error_log("Failed to rename audio file from $old_path to $new_path");
                 }
             }
 

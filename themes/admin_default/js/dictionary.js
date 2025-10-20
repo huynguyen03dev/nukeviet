@@ -9,7 +9,7 @@
 
 function nv_delete_entry(id) {
     if (confirm(nv_is_del_confirm[0])) {
-        $.post(script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_op_variable + '=entry_list&nocache=' + new Date().getTime(), 'delete=1&id=' + id, function(res) {
+        $.post(script_name + '?' + nv_lang_variable + '=' + nv_lang_data + '&' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=entry_list&nocache=' + new Date().getTime(), 'delete=1&id=' + id, function(res) {
             if (res == 'OK') {
                 window.location.href = window.location.href;
             } else {
