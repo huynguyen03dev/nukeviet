@@ -91,8 +91,9 @@
      * Setup audio icon functionality
      */
     function nv_dictionary_setup_audio_icon($icon, audio_url) {
+        $icon.show(); // ensure visible
         if (!audio_url) {
-            $icon.addClass('disabled');
+            $icon.removeClass('enabled playing').addClass('disabled').off('click');
             return;
         }
         
@@ -282,10 +283,13 @@
         
         if ($active_item.length > 0) {
             var word_id = $active_item.data('id');
+            var text = $active_item.find('.word-text').text();
+            $search_input.val(text);
             nv_dictionary_load_word_details(word_id);
             nv_dictionary_hide_autocomplete();
         } else if (autocomplete_data.length > 0) {
             // If no item selected, use first result
+            $search_input.val(autocomplete_data[0].headword);
             nv_dictionary_load_word_details(autocomplete_data[0].id);
             nv_dictionary_hide_autocomplete();
         }
@@ -313,6 +317,7 @@
         nv_dictionary_hide_intro();
         
         $('#word-headword').text(data.headword);
+        $search_input.val(data.headword);
         
         if (data.pos) {
             $('#word-pos').text(data.pos).show();
@@ -327,7 +332,7 @@
             $('#word-phonetic-container').hide();
         }
         
-        var headword_audio_url = data.audio_file ? data.audio_file : '';
+        var headword_audio_url = data.audio_url || '';
         var $headword_speaker = $('#headword-speaker');
         nv_dictionary_setup_audio_icon($headword_speaker, headword_audio_url);
         
@@ -343,7 +348,7 @@
         if (data.examples && data.examples.length > 0) {
             var examples_html = '';
             $.each(data.examples, function(index, example) {
-                var example_audio_url = example.audio_file ? example.audio_file : '';
+                var example_audio_url = example.audio_url || '';
                 var speaker_disabled_class = example_audio_url ? 'enabled' : 'disabled';
                 var speaker_icon_html = '<i class="dictionary-speaker-icon dictionary-example-speaker ' + 
                     speaker_disabled_class + ' fa fa-volume-up" data-audio-url="' + 
@@ -485,6 +490,8 @@
         $autocomplete_results.on('click', '.list-group-item', function(e) {
             e.preventDefault();
             var word_id = $(this).data('id');
+            var text = $(this).find('.word-text').text();
+            $search_input.val(text);
             nv_dictionary_load_word_details(word_id);
             nv_dictionary_hide_autocomplete();
         });

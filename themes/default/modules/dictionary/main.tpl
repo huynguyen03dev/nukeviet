@@ -34,7 +34,7 @@
         <div class="panel-heading">
             <h3 class="panel-title">
                 <span id="word-headword"></span>
-                <i class="fa fa-volume-up dictionary-speaker-icon" id="headword-speaker" style="display:none;" title="{LANG.play_pronunciation}"></i>
+                <i class="fa fa-volume-up dictionary-speaker-icon" id="headword-speaker" title="{LANG.play_pronunciation}"></i>
                 <span id="word-pos" class="badge"></span>
             </h3>
         </div>
