@@ -58,48 +58,49 @@ Based on PRD: `0001-prd-dictionary-audio-pronunciation.md`
   - [ ] 1.3 Test the schema changes by reinstalling or updating the dictionary module in admin panel
   - [ ] 1.4 Verify both columns exist in database using phpMyAdmin or similar tool
 
-- [ ] 2.0 Create audio file upload directory and security configuration
-  - [ ] 2.1 Create `/uploads/dictionary/audio/` directory with proper write permissions (755 or 777 depending on server)
-  - [ ] 2.2 Create `/uploads/dictionary/audio/index.html` security file with empty or "Stop!!!" content to prevent directory listing
-  - [ ] 2.3 Verify the parent `/uploads/dictionary/.htaccess` file allows audio file access (check for any deny rules that might block .mp3/.wav)
+- [x] 2.0 Create audio file upload directory and security configuration
+  - [x] 2.1 Create `/uploads/dictionary/audio/` directory with proper write permissions (755 or 777 depending on server)
+  - [x] 2.2 Create `/uploads/dictionary/audio/index.html` security file with empty or "Stop!!!" content to prevent directory listing
+  - [x] 2.3 Verify the parent `/uploads/dictionary/.htaccess` file allows audio file access (check for any deny rules that might block .mp3/.wav)
   - [ ] 2.4 Test directory is accessible but not listable by attempting to browse to it in a web browser
 
 - [ ] 3.0 Implement admin interface for audio file upload (add/edit entry forms)
-  - [ ] 3.1 Update `/modules/dictionary/admin/entry_add.php` to handle headword audio upload:
-    - [ ] 3.1.1 Add file validation logic (check MIME type for audio/mpeg or audio/wav, check size <= 5MB)
-    - [ ] 3.1.2 Generate unique filename using pattern `{entry_id}_headword.{ext}`
-    - [ ] 3.1.3 Move uploaded file to `/uploads/dictionary/audio/` directory
-    - [ ] 3.1.4 Save filename to `audio_file` column in entries table during INSERT
-    - [ ] 3.1.5 Add error handling for upload failures and display error messages
-  - [ ] 3.2 Update `/modules/dictionary/admin/entry_add.php` to handle example audio uploads:
-    - [ ] 3.2.1 Process array of example audio files from `$_FILES['ex_audio'][]`
-    - [ ] 3.2.2 Generate unique filenames using pattern `{entry_id}_example_{example_id}.{ext}` for each example
-    - [ ] 3.2.3 Save filenames to `audio_file` column in examples table during INSERT
-    - [ ] 3.2.4 Handle cases where example audio is not provided (optional field)
-  - [ ] 3.3 Update `/modules/dictionary/admin/entry_edit.php` to handle audio replacement/deletion:
-    - [ ] 3.3.1 Load existing audio filenames from database and pass to template
-    - [ ] 3.3.2 Add logic to handle new audio upload (delete old file if exists, upload new one)
-    - [ ] 3.3.3 Add logic to handle audio deletion via checkbox or delete button (remove file and set column to NULL)
-    - [ ] 3.3.4 Update audio_file columns during UPDATE query
-    - [ ] 3.3.5 Ensure old example audio files are deleted when examples are removed
-  - [ ] 3.4 Add file deletion logic when entry is deleted:
-    - [ ] 3.4.1 Find the entry deletion code (likely in `/modules/dictionary/admin/main.php` or similar)
-    - [ ] 3.4.2 Before deleting database record, fetch audio filenames and delete files using `unlink()`
-    - [ ] 3.4.3 Delete both headword audio and all associated example audio files
-  - [ ] 3.5 Update `/themes/admin_default/modules/dictionary/entry_add.tpl`:
-    - [ ] 3.5.1 Add `enctype="multipart/form-data"` to the form tag
-    - [ ] 3.5.2 Add file upload field for headword audio after phonetic field
-    - [ ] 3.5.3 Add help text indicating "Optional - MP3 or WAV, max 5MB"
-    - [ ] 3.5.4 Modify example item template in JavaScript to include audio upload field for each example
-  - [ ] 3.6 Update `/themes/admin_default/modules/dictionary/entry_edit.tpl`:
-    - [ ] 3.6.1 Add `enctype="multipart/form-data"` to the form tag
-    - [ ] 3.6.2 Add file upload field for headword audio with current file display if exists
-    - [ ] 3.6.3 Add "Replace" or "Delete" option for existing headword audio
-    - [ ] 3.6.4 Add audio upload fields to each existing example with current file display
+  - [x] 3.1 Update `/modules/dictionary/admin/entry_add.php` to handle headword audio upload:
+    - [x] 3.1.1 Add file validation logic (check MIME type for audio/mpeg or audio/wav, check size <= 5MB)
+    - [x] 3.1.2 Generate unique filename using pattern `{entry_id}_headword.{ext}`
+    - [x] 3.1.3 Move uploaded file to `/uploads/dictionary/audio/` directory
+    - [x] 3.1.4 Save filename to `audio_file` column in entries table during INSERT
+    - [x] 3.1.5 Add error handling for upload failures and display error messages
+  - [x] 3.2 Update `/modules/dictionary/admin/entry_add.php` to handle example audio uploads:
+    - [x] 3.2.1 Process array of example audio files from `$_FILES['ex_audio'][]`
+    - [x] 3.2.2 Generate unique filenames using pattern `{entry_id}_example_{example_id}.{ext}` for each example
+    - [x] 3.2.3 Save filenames to `audio_file` column in examples table during INSERT
+    - [x] 3.2.4 Handle cases where example audio is not provided (optional field)
+  - [x] 3.3 Update `/modules/dictionary/admin/entry_edit.php` to handle audio replacement/deletion:
+    - [x] 3.3.1 Load existing audio filenames from database and pass to template
+    - [x] 3.3.2 Add logic to handle new audio upload (delete old file if exists, upload new one)
+    - [x] 3.3.3 Add logic to handle audio deletion via checkbox or delete button (remove file and set column to NULL)
+    - [x] 3.3.4 Update audio_file columns during UPDATE query
+    - [x] 3.3.5 Ensure old example audio files are deleted when examples are removed
+  - [x] 3.4 Add file deletion logic when entry is deleted:
+    - [x] 3.4.1 Find the entry deletion code (likely in `/modules/dictionary/admin/main.php` or similar)
+    - [x] 3.4.2 Before deleting database record, fetch audio filenames and delete files using `unlink()`
+    - [x] 3.4.3 Delete both headword audio and all associated example audio files
+  - [x] 3.5 Update `/themes/admin_default/modules/dictionary/entry_add.tpl`:
+    - [x] 3.5.1 Add `enctype="multipart/form-data"` to the form tag
+    - [x] 3.5.2 Add file upload field for headword audio after phonetic field
+    - [x] 3.5.3 Add help text indicating "Optional - MP3 or WAV, max 5MB"
+    - [x] 3.5.4 Modify example item template in JavaScript to include audio upload field for each example
+  - [x] 3.6 Update `/themes/admin_default/modules/dictionary/entry_edit.tpl`:
+    - [x] 3.6.1 Add `enctype="multipart/form-data"` to the form tag
+    - [x] 3.6.2 Add file upload field for headword audio with current file display if exists
+    - [x] 3.6.3 Add "Replace" or "Delete" option for existing headword audio
+    - [x] 3.6.4 Add audio upload fields to each existing example with current file display
+    - [x] 3.6.5 Ensure dynamically added examples also have audio upload fields
     - [ ] 3.6.5 Ensure dynamically added examples also have audio upload fields
-  - [ ] 3.7 Update `/themes/admin_default/js/dictionary.js`:
-    - [ ] 3.7.1 Modify the dynamic example adding logic to include audio file input fields
-    - [ ] 3.7.2 Add proper name attributes like `ex_audio[]` for array handling
+  - [x] 3.7 Update `/themes/admin_default/js/dictionary.js`:
+    - [x] 3.7.1 Modify the dynamic example adding logic to include audio file input fields
+    - [x] 3.7.2 Add proper name attributes like `ex_audio[]` for array handling
   - [ ] 3.8 Update `/themes/admin_default/css/dictionary.css`:
     - [ ] 3.8.1 Add styles for audio upload sections (spacing, layout)
     - [ ] 3.8.2 Add styles for "current audio file" display and delete/replace controls

@@ -58,6 +58,8 @@ $(function() {
             var langTranslation = document.body.dataset.langExampleTranslation || 'Translation (VI)';
             var langSentencePlaceholder = document.body.dataset.langExampleSentencePlaceholder || 'Example sentence in English';
             var langTranslationPlaceholder = document.body.dataset.langExampleTranslationPlaceholder || 'Vietnamese translation (optional)';
+            var langExampleAudio = document.body.dataset.langExampleAudio || 'Example Audio';
+            var langAudioOptional = document.body.dataset.langAudioOptional || 'Optional - MP3 or WAV, max 5MB';
 
             item.innerHTML = '<div class="example-header">' +
                 '<span class="example-number">' + langExample + ' ' + (currentCount + 1) + '</span>' +
@@ -70,6 +72,11 @@ $(function() {
               '<div class="example-row">' +
                 '<label>' + langTranslation + '</label>' +
                 '<input type="text" name="ex_translation_vi[]" placeholder="' + langTranslationPlaceholder + '">' +
+              '</div>' +
+              '<div class="example-row">' +
+                '<label>' + langExampleAudio + '</label>' +
+                '<input type="file" name="ex_audio[]" accept="audio/mp3,audio/mpeg,audio/wav">' +
+                '<small class="help-text">' + langAudioOptional + '</small>' +
               '</div>';
 
             container.appendChild(item);

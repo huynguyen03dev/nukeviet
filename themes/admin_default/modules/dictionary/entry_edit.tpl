@@ -10,7 +10,9 @@
        data-lang-example-sentence="{LANG.example_sentence}"
        data-lang-example-translation="{LANG.example_translation}"
        data-lang-example-sentence-placeholder="{LANG.example_sentence_placeholder}"
-       data-lang-example-translation-placeholder="{LANG.example_translation_placeholder}">
+       data-lang-example-translation-placeholder="{LANG.example_translation_placeholder}"
+       data-lang-example-audio="{LANG.example_audio}"
+       data-lang-audio-optional="{LANG.audio_optional}">
     <!-- Errors -->
     <!-- BEGIN: errors -->
     <div class="alert alert-danger">
@@ -22,7 +24,7 @@
     </div>
     <!-- END: errors -->
 
-    <form action="{ACTION}" method="post" class="form-horizontal" role="form" novalidate>
+    <form action="{ACTION}" method="post" class="form-horizontal" role="form" novalidate enctype="multipart/form-data">
       <input type="hidden" name="{NV_LANG_VARIABLE}" value="{NV_LANG_DATA}">
       <input type="hidden" name="{NV_NAME_VARIABLE}" value="{MODULE_NAME}">
       <input type="hidden" name="{NV_OP_VARIABLE}" value="{OP}">
@@ -58,6 +60,28 @@
       </div>
 
       <div class="form-group">
+        <label class="col-sm-3 control-label">{LANG.upload_audio}</label>
+        <div class="col-sm-9">
+          <!-- BEGIN: current_audio -->
+          <div class="current-audio-file">
+            <strong>{LANG.current_audio}:</strong> 
+            <a href="{AUDIO_URL}" target="_blank">{AUDIO_FILE}</a>
+            <audio controls style="display:block; margin-top:5px; max-width:100%;">
+              <source src="{AUDIO_URL}" type="audio/mpeg">
+            </audio>
+          </div>
+          <!-- END: current_audio -->
+          <input type="file" name="audio" class="form-control" accept="audio/mpeg,audio/wav">
+          <small class="help-block">{LANG.audio_optional}</small>
+          <!-- BEGIN: delete_audio -->
+          <label style="margin-top:10px;">
+            <input type="checkbox" name="delete_audio" value="1"> {LANG.delete_audio}
+          </label>
+          <!-- END: delete_audio -->
+        </div>
+      </div>
+
+      <div class="form-group">
         <label class="col-sm-3 control-label">{LANG.meaning_vi} <sup class="required">(*)</sup></label>
         <div class="col-sm-9">
           <textarea name="meaning_vi" rows="4" class="form-control" required>{MEANING_VI}</textarea>
@@ -79,6 +103,7 @@
             <div id="examples-container">
               <!-- BEGIN: example -->
               <div class="example-item">
+                <input type="hidden" name="ex_id[]" value="{EXAMPLE.id}">
                 <div class="example-header">
                   <span class="example-number">{LANG.example} {EXAMPLE.num}</span>
                   <button type="button" class="example-remove-btn" data-remove-example aria-label="{LANG.remove_example}" title="{LANG.remove_example}">&times;</button>
@@ -90,6 +115,23 @@
                 <div class="example-row">
                   <label>{LANG.example_translation}</label>
                   <input type="text" name="ex_translation_vi[]" placeholder="{LANG.example_translation_placeholder}" value="{EXAMPLE.translation_vi}">
+                </div>
+                <div class="example-row">
+                  <label>{LANG.example_audio}</label>
+                  <!-- BEGIN: current_example_audio -->
+                  <div class="current-audio-file" style="margin-bottom:5px;">
+                    <strong>{LANG.current_audio}:</strong> 
+                    <a href="{EXAMPLE.audio_url}" target="_blank">{EXAMPLE.audio_file}</a>
+                    <audio controls style="display:block; margin-top:5px; max-width:100%;">
+                      <source src="{EXAMPLE.audio_url}" type="audio/mpeg">
+                    </audio>
+                    <label style="margin-top:5px;">
+                      <input type="checkbox" name="ex_delete_audio[]" value="{EXAMPLE.id}"> {LANG.delete_audio}
+                    </label>
+                  </div>
+                  <!-- END: current_example_audio -->
+                  <input type="file" name="ex_audio[]" accept="audio/mpeg,audio/wav">
+                  <small class="help-block">{LANG.audio_optional}</small>
                 </div>
               </div>
               <!-- END: example -->

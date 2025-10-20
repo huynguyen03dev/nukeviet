@@ -10,7 +10,9 @@
        data-lang-example-sentence="{LANG.example_sentence}"
        data-lang-example-translation="{LANG.example_translation}"
        data-lang-example-sentence-placeholder="{LANG.example_sentence_placeholder}"
-       data-lang-example-translation-placeholder="{LANG.example_translation_placeholder}">
+       data-lang-example-translation-placeholder="{LANG.example_translation_placeholder}"
+       data-lang-example-audio="{LANG.example_audio}"
+       data-lang-audio-optional="{LANG.audio_optional}">
     <!-- Errors -->
     <!-- BEGIN: errors -->
     <div class="alert alert-danger">
@@ -22,7 +24,7 @@
     </div>
     <!-- END: errors -->
 
-    <form action="{ACTION}" method="post" class="form-horizontal" role="form" novalidate>
+    <form action="{ACTION}" method="post" enctype="multipart/form-data" class="form-horizontal" role="form" novalidate>
       <input type="hidden" name="{NV_LANG_VARIABLE}" value="{NV_LANG_DATA}">
       <input type="hidden" name="{NV_NAME_VARIABLE}" value="{MODULE_NAME}">
       <input type="hidden" name="{NV_OP_VARIABLE}" value="{OP}">
@@ -53,6 +55,14 @@
         <label class="col-sm-3 control-label">{LANG.phonetic}</label>
         <div class="col-sm-9">
           <input type="text" name="phonetic" value="{PHONETIC}" class="form-control" placeholder="{LANG.phonetic_placeholder}">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-3 control-label">{LANG.audio_pronunciation}</label>
+        <div class="col-sm-9">
+          <input type="file" name="audio" class="form-control" accept="audio/mp3,audio/mpeg,audio/wav">
+          <p class="help-block">{LANG.audio_optional}</p>
         </div>
       </div>
 

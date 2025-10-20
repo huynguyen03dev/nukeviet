@@ -26,13 +26,34 @@ if (isset($_SESSION['dictionary_success_message'])) {
 if ($nv_Request->isset_request('delete', 'post')) {
     $id = $nv_Request->get_int('id', 'post', 0);
     if ($id > 0) {
-        // Get entry title before deleting for toast notification
-        $headword = $db->query('SELECT headword FROM ' . NV_DICTIONARY_GLOBALTABLE . '_entries WHERE id = ' . $id)->fetchColumn();
+        // Get entry data before deleting (for headword and audio file)
+        $entry = $db->query('SELECT headword, audio_file FROM ' . NV_DICTIONARY_GLOBALTABLE . '_entries WHERE id = ' . $id)->fetch();
+        $headword = $entry ? $entry['headword'] : '';
         
-        // Delete examples first
+        // Get all example audio files before deleting examples
+        $example_audios = $db->query('SELECT audio_file FROM ' . NV_DICTIONARY_GLOBALTABLE . '_examples WHERE entry_id = ' . $id . ' AND audio_file IS NOT NULL')->fetchAll(PDO::FETCH_COLUMN);
+        
+        // Delete audio files from filesystem
+        // Delete headword audio file
+        if ($entry && !empty($entry['audio_file'])) {
+            $audio_path = NV_ROOTDIR . '/uploads/' . $module_name . '/audio/' . $entry['audio_file'];
+            if (file_exists($audio_path)) {
+                @unlink($audio_path);
+            }
+        }
+        
+        // Delete example audio files
+        foreach ($example_audios as $audio_file) {
+            $audio_path = NV_ROOTDIR . '/uploads/' . $module_name . '/audio/' . $audio_file;
+            if (file_exists($audio_path)) {
+                @unlink($audio_path);
+            }
+        }
+        
+        // Delete examples from database
         $db->query('DELETE FROM ' . NV_DICTIONARY_GLOBALTABLE . '_examples WHERE entry_id = ' . $id);
         
-        // Delete entry
+        // Delete entry from database
         $result = $db->query('DELETE FROM ' . NV_DICTIONARY_GLOBALTABLE . '_entries WHERE id = ' . $id);
         
         if ($result && $headword) {
