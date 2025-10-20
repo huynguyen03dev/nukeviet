@@ -55,16 +55,16 @@ Based on PRD: `0001-prd-dictionary-audio-pronunciation.md`
 - [x] 1.0 Update database schema to support audio files
   - [x] 1.1 Add `audio_file` column to `_entries` table (VARCHAR 255, nullable, default NULL) in `/modules/dictionary/action_mysql.php`
   - [x] 1.2 Add `audio_file` column to `_examples` table (VARCHAR 255, nullable, default NULL) in `/modules/dictionary/action_mysql.php`
-  - [ ] 1.3 Test the schema changes by reinstalling or updating the dictionary module in admin panel
-  - [ ] 1.4 Verify both columns exist in database using phpMyAdmin or similar tool
+  - [x] 1.3 Test the schema changes by reinstalling or updating the dictionary module in admin panel
+  - [x] 1.4 Verify both columns exist in database using phpMyAdmin or similar tool
 
 - [x] 2.0 Create audio file upload directory and security configuration
   - [x] 2.1 Create `/uploads/dictionary/audio/` directory with proper write permissions (755 or 777 depending on server)
   - [x] 2.2 Create `/uploads/dictionary/audio/index.html` security file with empty or "Stop!!!" content to prevent directory listing
   - [x] 2.3 Verify the parent `/uploads/dictionary/.htaccess` file allows audio file access (check for any deny rules that might block .mp3/.wav)
-  - [ ] 2.4 Test directory is accessible but not listable by attempting to browse to it in a web browser
+  - [x] 2.4 Test directory is accessible but not listable by attempting to browse to it in a web browser
 
-- [ ] 3.0 Implement admin interface for audio file upload (add/edit entry forms)
+- [x] 3.0 Implement admin interface for audio file upload (add/edit entry forms)
   - [x] 3.1 Update `/modules/dictionary/admin/entry_add.php` to handle headword audio upload:
     - [x] 3.1.1 Add file validation logic (check MIME type for audio/mpeg or audio/wav, check size <= 5MB)
     - [x] 3.1.2 Generate unique filename using pattern `{entry_id}_headword.{ext}`
@@ -97,38 +97,38 @@ Based on PRD: `0001-prd-dictionary-audio-pronunciation.md`
     - [x] 3.6.3 Add "Replace" or "Delete" option for existing headword audio
     - [x] 3.6.4 Add audio upload fields to each existing example with current file display
     - [x] 3.6.5 Ensure dynamically added examples also have audio upload fields
-    - [ ] 3.6.5 Ensure dynamically added examples also have audio upload fields
+    - [x] 3.6.5 Ensure dynamically added examples also have audio upload fields
   - [x] 3.7 Update `/themes/admin_default/js/dictionary.js`:
     - [x] 3.7.1 Modify the dynamic example adding logic to include audio file input fields
     - [x] 3.7.2 Add proper name attributes like `ex_audio[]` for array handling
-  - [ ] 3.8 Update `/themes/admin_default/css/dictionary.css`:
-    - [ ] 3.8.1 Add styles for audio upload sections (spacing, layout)
-    - [ ] 3.8.2 Add styles for "current audio file" display and delete/replace controls
+  - [x] 3.8 Update `/themes/admin_default/css/dictionary.css`:
+    - [x] 3.8.1 Add styles for audio upload sections (spacing, layout)
+    - [x] 3.8.2 Add styles for "current audio file" display and delete/replace controls
 
-- [ ] 4.0 Implement public-facing audio playback interface with speaker icons
-  - [ ] 4.1 Update `/modules/dictionary/funcs/main.php` to include audio data:
-    - [ ] 4.1.1 Modify the 'getword' action to include `audio_file` from entries table
-    - [ ] 4.1.2 Modify the examples query to include `audio_file` column
-    - [ ] 4.1.3 Add audio file URLs to JSON response (construct full URL path like `/uploads/dictionary/audio/{filename}`)
-    - [ ] 4.1.4 Handle cases where audio_file is NULL (don't include URL or set to empty string)
-  - [ ] 4.2 Update `/themes/default/modules/dictionary/main.tpl`:
-    - [ ] 4.2.1 Add speaker icon element next to word headword display area (use FontAwesome `fa-volume-up` or similar)
-    - [ ] 4.2.2 Add hidden HTML5 `<audio>` element for headword pronunciation
-    - [ ] 4.2.3 Add speaker icon template for example sentences (to be rendered by JavaScript)
-    - [ ] 4.2.4 Ensure icons are positioned inline with text
-  - [ ] 4.3 Update `/themes/default/js/dictionary.js`:
-    - [ ] 4.3.1 When rendering word details, check if `audio_file` exists in response data
-    - [ ] 4.3.2 If audio exists, enable speaker icon and set audio source; if not, disable/grey out icon
-    - [ ] 4.3.3 Add click event listener to speaker icons to play audio using HTML5 Audio API
-    - [ ] 4.3.4 Add visual feedback when audio is playing (change icon color or add animation)
-    - [ ] 4.3.5 Handle audio loading errors gracefully (show disabled icon if file missing)
-    - [ ] 4.3.6 Render speaker icons for each example sentence with similar enable/disable logic
+- [x] 4.0 Implement public-facing audio playback interface with speaker icons
+  - [x] 4.1 Update `/modules/dictionary/funcs/main.php` to include audio data:
+    - [x] 4.1.1 Modify the 'getword' action to include `audio_file` from entries table
+    - [x] 4.1.2 Modify the examples query to include `audio_file` column
+    - [x] 4.1.3 Add audio file URLs to JSON response (construct full URL path like `/uploads/dictionary/audio/{filename}`)
+    - [x] 4.1.4 Handle cases where audio_file is NULL (don't include URL or set to empty string)
+  - [x] 4.2 Update `/themes/default/modules/dictionary/main.tpl`:
+    - [x] 4.2.1 Add speaker icon element next to word headword display area (use FontAwesome `fa-volume-up` or similar)
+    - [x] 4.2.2 Add hidden HTML5 `<audio>` element for headword pronunciation
+    - [x] 4.2.3 Add speaker icon template for example sentences (to be rendered by JavaScript)
+    - [x] 4.2.4 Ensure icons are positioned inline with text
+  - [x] 4.3 Update `/themes/default/js/dictionary.js`:
+    - [x] 4.3.1 When rendering word details, check if `audio_file` exists in response data
+    - [x] 4.3.2 If audio exists, enable speaker icon and set audio source; if not, disable/grey out icon
+    - [x] 4.3.3 Add click event listener to speaker icons to play audio using HTML5 Audio API
+    - [x] 4.3.4 Add visual feedback when audio is playing (change icon color or add animation)
+    - [x] 4.3.5 Handle audio loading errors gracefully (show disabled icon if file missing)
+    - [x] 4.3.6 Render speaker icons for each example sentence with similar enable/disable logic
   - [ ] 4.4 Update `/themes/default/css/dictionary.css`:
-    - [ ] 4.4.1 Style speaker icons (size, color, positioning)
-    - [ ] 4.4.2 Add disabled state styles (grey color, reduced opacity, no pointer cursor)
-    - [ ] 4.4.3 Add active/playing state styles (different color or animation)
-    - [ ] 4.4.4 Add hover effects for enabled speaker icons
-    - [ ] 4.4.5 Ensure responsive design (appropriate sizes for mobile devices)
+    - [x] 4.4.1 Style speaker icons (size, color, positioning)
+    - [x] 4.4.2 Add disabled state styles (grey color, reduced opacity, no pointer cursor)
+    - [x] 4.4.3 Add active/playing state styles (different color or animation)
+    - [x] 4.4.4 Add hover effects for enabled speaker icons
+    - [x] 4.4.5 Ensure responsive design (appropriate sizes for mobile devices)
 
 - [ ] 5.0 Add language keys for audio-related UI text
   - [ ] 5.1 Update `/modules/dictionary/language/en.php`:

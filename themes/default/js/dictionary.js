@@ -23,6 +23,7 @@
     var current_request = null;
     var selected_index = -1;
     var autocomplete_data = [];
+    var current_audio = null;
     
     /**
      * Get configuration (lazy load to avoid timing issues)
@@ -44,6 +45,63 @@
             "'": '&#039;'
         };
         return String(text).replace(/[&<>"']/g, function(m) { return map[m]; });
+    }
+    
+    /**
+     * Stop any currently playing audio
+     */
+    function nv_dictionary_stop_audio() {
+        if (current_audio) {
+            current_audio.pause();
+            current_audio.currentTime = 0;
+            $('.dictionary-speaker-icon').removeClass('playing');
+        }
+    }
+    
+    /**
+     * Play audio from URL
+     */
+    function nv_dictionary_play_audio(audio_url, $icon) {
+        nv_dictionary_stop_audio();
+        
+        if (!audio_url) {
+            return;
+        }
+        
+        current_audio = new Audio(audio_url);
+        
+        $icon.addClass('playing');
+        
+        current_audio.addEventListener('ended', function() {
+            $icon.removeClass('playing');
+        });
+        
+        current_audio.addEventListener('error', function() {
+            $icon.removeClass('playing').addClass('disabled');
+            console.error('Error loading audio file:', audio_url);
+        });
+        
+        current_audio.play().catch(function(error) {
+            $icon.removeClass('playing');
+            console.error('Error playing audio:', error);
+        });
+    }
+    
+    /**
+     * Setup audio icon functionality
+     */
+    function nv_dictionary_setup_audio_icon($icon, audio_url) {
+        if (!audio_url) {
+            $icon.addClass('disabled');
+            return;
+        }
+        
+        $icon.removeClass('disabled').addClass('enabled');
+        $icon.off('click').on('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            nv_dictionary_play_audio(audio_url, $(this));
+        });
     }
     
     /**
@@ -252,10 +310,8 @@
      * Display word details
      */
     function nv_dictionary_display_word_details(data) {
-        // Hide intro panel
         nv_dictionary_hide_intro();
         
-        // Set headword and POS
         $('#word-headword').text(data.headword);
         
         if (data.pos) {
@@ -264,7 +320,6 @@
             $('#word-pos').hide();
         }
         
-        // Set phonetic
         if (data.phonetic) {
             $('#word-phonetic').text(data.phonetic);
             $('#word-phonetic-container').show();
@@ -272,10 +327,12 @@
             $('#word-phonetic-container').hide();
         }
         
-        // Set meaning
+        var headword_audio_url = data.audio_file ? data.audio_file : '';
+        var $headword_speaker = $('#headword-speaker');
+        nv_dictionary_setup_audio_icon($headword_speaker, headword_audio_url);
+        
         $('#word-meaning').html(nv_dictionary_nl2br(nv_dictionary_escape_html(data.meaning_vi)));
         
-        // Set notes
         if (data.notes && data.notes.trim() !== '') {
             $('#word-notes').html(nv_dictionary_nl2br(nv_dictionary_escape_html(data.notes)));
             $('#word-notes-container').show();
@@ -283,12 +340,18 @@
             $('#word-notes-container').hide();
         }
         
-        // Set examples
         if (data.examples && data.examples.length > 0) {
             var examples_html = '';
             $.each(data.examples, function(index, example) {
+                var example_audio_url = example.audio_file ? example.audio_file : '';
+                var speaker_disabled_class = example_audio_url ? 'enabled' : 'disabled';
+                var speaker_icon_html = '<i class="dictionary-speaker-icon dictionary-example-speaker ' + 
+                    speaker_disabled_class + ' fa fa-volume-up" data-audio-url="' + 
+                    nv_dictionary_escape_html(example_audio_url) + '"></i>';
+                
                 examples_html += '<div class="dictionary-example-item">';
                 examples_html += '<div class="dictionary-example-en">' + 
+                    speaker_icon_html + ' ' +
                     nv_dictionary_escape_html(example.sentence_en) + '</div>';
                 if (example.translation_vi) {
                     examples_html += '<div class="dictionary-example-vi">' + 
@@ -298,12 +361,18 @@
             });
             
             $('#word-examples-list').html(examples_html);
+            
+            $('#word-examples-list').find('.dictionary-example-speaker').each(function() {
+                var $speaker = $(this);
+                var audio_url = $speaker.data('audio-url');
+                nv_dictionary_setup_audio_icon($speaker, audio_url);
+            });
+            
             $('#word-examples-container').show();
         } else {
             $('#word-examples-container').hide();
         }
         
-        // Show panel with animation
         $word_details_panel.slideDown(300);
     }
     

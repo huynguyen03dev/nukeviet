@@ -392,3 +392,62 @@
     margin-right: 8px;
 }
 
+/* Audio Speaker Icons */
+.dictionary-speaker-icon {
+    display: inline-block;
+    font-size: 20px;
+    line-height: 1;
+    color: #95a5a6; /* neutral by default */
+    vertical-align: middle;
+    margin-left: 8px;
+    cursor: pointer;
+}
+
+/* Headword speaker icon in panel title */
+#word-details-panel .panel-title .dictionary-speaker-icon {
+    font-size: 22px;
+    margin-left: 10px;
+}
+
+/* Example speaker icon placement */
+.dictionary-example-speaker {
+    margin-right: 6px;
+}
+
+/* Disabled state */
+.dictionary-speaker-icon.disabled {
+    color: #bdc3c7;
+    opacity: 0.5;
+    cursor: default;
+    pointer-events: none;
+}
+
+/* Playing state */
+.dictionary-speaker-icon.playing {
+    color: #e67e22;
+    animation: dictionary-audio-pulse 1s ease-in-out infinite;
+}
+
+@keyframes dictionary-audio-pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Hover effects for enabled icons */
+.dictionary-speaker-icon.enabled:hover {
+    color: #3498db;
+    transform: scale(1.08);
+}
+
+/* Responsive sizes for speaker icons */
+@media (max-width: 768px) {
+    .dictionary-speaker-icon { font-size: 18px; }
+    #word-details-panel .panel-title .dictionary-speaker-icon { font-size: 20px; }
+}
+
+@media (max-width: 480px) {
+    .dictionary-speaker-icon { font-size: 16px; }
+    #word-details-panel .panel-title .dictionary-speaker-icon { font-size: 18px; }
+}
+
