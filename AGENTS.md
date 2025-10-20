@@ -1,678 +1,174 @@
-# NukeViet Frontend Development Rules
-
-## Overview
-This document defines the standard structure and conventions for organizing frontend assets (CSS, JavaScript, and HTML templates) when developing modules in NukeViet CMS.
-
-## General Principles
-
-### Default Theme Selection
-- When developing frontend files for a module, if the user does not specify a theme, use the **default theme**
-- Admin pages: `admin_default`
-- Site pages: `default`
-
-### Automatic Asset Loading
-The NukeViet framework automatically finds and loads CSS and JavaScript files from the specified locations for the appropriate pages in modules. No manual asset registration is required if files are placed in the correct directories.
-
----
-
-## CSS File Organization
-
-### Location Structure
-CSS files should be organized by module name and page type:
-
-#### Admin Pages
-```
-/themes/admin_default/css/<current_module_name>.css
-```
-
-**Example:**
-- For the `dictionary` module admin pages
-- Path: `/themes/admin_default/css/dictionary.css`
-
-#### Site Pages
-```
-/themes/default/css/<current_module_name>.css
-```
-
-**Example:**
-- For the `dictionary` module site pages
-- Path: `/themes/default/css/dictionary.css`
-
-### Naming Convention
-- Use the module name as the CSS filename
-- Use lowercase with hyphens for multi-word module names
-- Extension: `.css`
-
----
-
-## JavaScript File Organization
-
-### Location Structure
-JavaScript files should be organized by module name and page type:
-
-#### Admin Pages
-```
-/themes/admin_default/js/<current_module_name>.js
-```
-
-**Example:**
-- For the `dictionary` module admin pages
-- Path: `/themes/admin_default/js/dictionary.js`
-
-#### Site Pages
-```
-/themes/default/js/<current_module_name>.js
-```
-
-**Example:**
-- For the `dictionary` module site pages
-- Path: `/themes/default/js/dictionary.js`
-
-### Naming Convention
-- Use the module name as the JavaScript filename
-- Use lowercase with hyphens for multi-word module names
-- Extension: `.js`
-
----
-
-## HTML Template Organization (XTemplate)
-
-### Template Engine
-NukeViet uses **XTemplate** for separating presentation from logic. All HTML templates must be created as `.tpl` files.
-
-### Location Structure
-
-#### Admin Pages
-```
-/themes/admin_default/modules/<current_module_name>/
-```
-
-**Example:**
-- For the `dictionary` module admin pages
-- Directory: `/themes/admin_default/modules/dictionary/`
-- Files: `entry_add.tpl`, `entry_edit.tpl`, `main.tpl`, etc.
-
-#### Site Pages
-```
-/themes/default/modules/<current_module_name>/
-```
-
-**Example:**
-- For the `dictionary` module site pages
-- Directory: `/themes/default/modules/dictionary/`
-- Files: `main.tpl`, `detail.tpl`, `search.tpl`, etc.
-
-### File Naming Convention
-
-**Critical Rule:** The `.tpl` template file name **must match** the corresponding PHP file name.
-
-| PHP File | Template File | Purpose |
-|----------|---------------|---------|
-| `add_entry.php` | `add_entry.tpl` | Add entry page template |
-| `edit_entry.php` | `edit_entry.tpl` | Edit entry page template |
-| `main.php` | `main.tpl` | Main page template |
-| `detail.php` | `detail.tpl` | Detail view template |
-| `search.php` | `search.tpl` | Search page template |
-
-### Template Structure Example
-
-```html
-<!-- BEGIN: main -->
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title">{LANG.title}</h3>
-    </div>
-    <div class="panel-body">
-        <!-- BEGIN: loop -->
-        <div class="item">
-            <h4>{DATA.name}</h4>
-            <p>{DATA.description}</p>
-        </div>
-        <!-- END: loop -->
-    </div>
-</div>
-<!-- END: main -->
-```
-
----
-
-## Language/Localization Organization
-
-### Overview
-NukeViet supports multi-language functionality through language files. Each module can define its own translations for different languages, allowing the system to display content in the user's preferred language.
-
-### Location Structure
-
-Language files are stored in the module's language directory:
-
-```
-/modules/<current_module_name>/language/
-```
-
-**Example:**
-- For the `dictionary` module
-- Directory: `/modules/dictionary/language/`
-- Files: `en.php`, `vi.php`, `fr.php`, etc.
-
-### File Naming Convention
-
-Language files are named using the language code with `.php` extension:
-
-- `en.php` - English translations
-- `vi.php` - Vietnamese translations
-- `fr.php` - French translations
-- `de.php` - German translations
-- And so on...
-
-### Language File Structure
-
-Each language file must follow this structure:
-
-```php
-<?php
-
-/**
- * NukeViet Content Management System
- * @version 5.x
- * @author VINADES.,JSC <contact@vinades.vn>
- * @copyright (C) 2009-2025 VINADES.,JSC. All rights reserved
- * @license GNU/GPL version 2 or any later version
- * @see https://github.com/nukeviet The NukeViet CMS GitHub project
- */
-
-if (!defined('NV_MAINFILE')) {
-    exit('Stop!!!');
-}
-
-$lang_translator['author'] = 'Your Name <your@email.com>';
-$lang_translator['createdate'] = 'DD/MM/YYYY, HH:MM';
-$lang_translator['copyright'] = '@Copyright (C) YEAR Your Name';
-$lang_translator['info'] = '';
-$lang_translator['langtype'] = 'lang_module';
-
-// Module language definitions
-$lang_module['add'] = 'Add new entry';
-$lang_module['edit'] = 'Edit entry';
-$lang_module['delete'] = 'Delete entry';
-$lang_module['save'] = 'Save';
-$lang_module['cancel'] = 'Cancel';
-$lang_module['title'] = 'Title';
-$lang_module['description'] = 'Description';
-$lang_module['add_time'] = 'Post time';
-$lang_module['empty_title'] = 'Please enter a title';
-$lang_module['empty_bodytext'] = 'Please enter content';
-// ... more language keys
-```
-
-### Using Language in PHP Files
-
-#### Module-Specific Language
-
-To access module-specific language strings in PHP:
-
-```php
-// Get a language string
-$title = $nv_Lang->getModule('add');
-// Returns: "Add new entry" (if using English)
-
-// Use in error messages
-if (empty($data['title'])) {
-    $errors[] = $nv_Lang->getModule('empty_title');
-}
-
-// Use in page title
-$page_title = $nv_Lang->getModule('edit');
-```
-
-#### Global Language
-
-To access global language strings (shared across all modules):
-
-```php
-// Get a global language string
-$delete_confirm = $nv_Lang->getGlobal('delete_confirm');
-
-// Common global strings
-$save_text = $nv_Lang->getGlobal('save');
-$cancel_text = $nv_Lang->getGlobal('cancel');
-$error_text = $nv_Lang->getGlobal('error_404_title');
-```
-
-### Using Language in Templates (XTemplate)
-
-#### Assigning Language to Templates
-
-In your PHP file, assign language arrays to the template:
-
-```php
-// For newer NukeViet versions (recommended)
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-
-// Alternative method (older approach)
-$xtpl->assign('LANG', $lang_module);
-$xtpl->assign('GLANG', $lang_global);
-```
-
-#### Using Language in Template Files
-
-Access language strings in `.tpl` files using curly braces:
-
-```html
-<!-- BEGIN: main -->
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <!-- Module language -->
-        <h3 class="panel-title">{LANG.title}</h3>
-    </div>
-    <div class="panel-body">
-        <p>{LANG.description}</p>
-        
-        <form action="" method="post">
-            <!-- Input with module language -->
-            <input type="text" placeholder="{LANG.enter_title}">
-            
-            <!-- Buttons with global language -->
-            <button type="submit" class="btn btn-primary">{GLANG.save}</button>
-            <a href="#" class="btn btn-default">{GLANG.cancel}</a>
-        </form>
-    </div>
-</div>
-<!-- END: main -->
-```
-
-### Language Key Naming Conventions
-
-Follow these conventions when naming language keys:
-
-1. **Use lowercase with underscores**
-   ```php
-   $lang_module['add_new_entry'] = 'Add New Entry';
-   $lang_module['edit_entry'] = 'Edit Entry';
-   $lang_module['delete_confirm'] = 'Are you sure you want to delete?';
-   ```
-
-2. **Use descriptive names**
-   ```php
-   // ✅ Good
-   $lang_module['empty_title'] = 'Please enter a title';
-   $lang_module['empty_bodytext'] = 'Please enter content';
-   
-   // ❌ Bad
-   $lang_module['err1'] = 'Please enter a title';
-   $lang_module['e2'] = 'Please enter content';
-   ```
-
-3. **Group related keys**
-   ```php
-   // Form fields
-   $lang_module['field_title'] = 'Title';
-   $lang_module['field_description'] = 'Description';
-   $lang_module['field_author'] = 'Author';
-   
-   // Error messages
-   $lang_module['error_empty_title'] = 'Title cannot be empty';
-   $lang_module['error_invalid_email'] = 'Invalid email address';
-   
-   // Success messages
-   $lang_module['success_add'] = 'Entry added successfully';
-   $lang_module['success_edit'] = 'Entry updated successfully';
-   ```
-
-### Complete Example
-
-#### Language File: `/modules/dictionary/language/en.php`
-
-```php
-<?php
-if (!defined('NV_MAINFILE')) {
-    exit('Stop!!!');
-}
-
-$lang_translator['author'] = 'VINADES.,JSC <contact@vinades.vn>';
-$lang_translator['createdate'] = '11/10/2025, 10:00';
-$lang_translator['copyright'] = '@Copyright (C) 2025 VINADES.,JSC';
-$lang_translator['info'] = '';
-$lang_translator['langtype'] = 'lang_module';
-
-// Page titles
-$lang_module['page_title'] = 'Dictionary';
-$lang_module['add'] = 'Add New Entry';
-$lang_module['edit'] = 'Edit Entry';
-
-// Form fields
-$lang_module['headword'] = 'Headword';
-$lang_module['phonetic'] = 'Phonetic';
-$lang_module['meaning'] = 'Meaning';
-$lang_module['example'] = 'Example';
-
-// Messages
-$lang_module['empty_title'] = 'Please enter a headword';
-$lang_module['empty_bodytext'] = 'Please enter the meaning';
-$lang_module['success_add'] = 'Entry added successfully';
-$lang_module['success_edit'] = 'Entry updated successfully';
-```
-
-#### PHP File: `/modules/dictionary/admin/entry_add.php`
-
-```php
-<?php
-if (!defined('NV_IS_DICTIONARY_ADMIN')) {
-    exit('Stop!!!');
-}
-
-// Use language in page title
-$page_title = $nv_Lang->getModule('add');
-
-// Use language in validation
-if (empty($data['headword'])) {
-    $errors[] = $nv_Lang->getModule('empty_title');
-}
-
-// Assign language to template
-$xtpl = new XTemplate('entry_add.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
-$xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-
-$xtpl->parse('main');
-$contents = $xtpl->text('main');
-```
-
-#### Template File: `/themes/admin_default/modules/dictionary/entry_add.tpl`
-
-```html
-<!-- BEGIN: main -->
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h3>{LANG.add}</h3>
-    </div>
-    <div class="panel-body">
-        <form method="post">
-            <div class="form-group">
-                <label>{LANG.headword}</label>
-                <input type="text" name="headword" class="form-control">
-            </div>
-            
-            <div class="form-group">
-                <label>{LANG.phonetic}</label>
-                <input type="text" name="phonetic" class="form-control">
-            </div>
-            
-            <div class="form-group">
-                <label>{LANG.meaning}</label>
-                <textarea name="meaning" class="form-control"></textarea>
-            </div>
-            
-            <button type="submit" class="btn btn-primary">{GLANG.save}</button>
-            <a href="#" class="btn btn-default">{GLANG.cancel}</a>
-        </form>
-    </div>
-</div>
-<!-- END: main -->
-```
-
-### Best Practices for Language Files
-
-1. **Always include security check**
-   ```php
-   if (!defined('NV_MAINFILE')) {
-       exit('Stop!!!');
-   }
-   ```
-
-2. **Keep translations consistent across languages**
-   - Ensure all language files have the same keys
-   - Only the values should differ
-
-3. **Use proper character encoding**
-   - Save files in UTF-8 without BOM
-   - Use proper HTML entities when needed
-
-4. **Organize language keys logically**
-   - Group related translations together
-   - Use comments to separate sections
-
-5. **Avoid hardcoded text**
-   - Never put user-facing text directly in PHP or templates
-   - Always use language keys for all text
-
-### Common Language Keys
-
-Most modules should include these common language keys:
-
-```php
-// CRUD operations
-$lang_module['add'] = 'Add';
-$lang_module['edit'] = 'Edit';
-$lang_module['delete'] = 'Delete';
-$lang_module['save'] = 'Save';
-$lang_module['cancel'] = 'Cancel';
-
-// Messages
-$lang_module['success_add'] = 'Added successfully';
-$lang_module['success_edit'] = 'Updated successfully';
-$lang_module['success_delete'] = 'Deleted successfully';
-$lang_module['error_save'] = 'An error occurred while saving';
-
-// Validation
-$lang_module['empty_title'] = 'Please enter a title';
-$lang_module['empty_bodytext'] = 'Please enter content';
-
-// Common fields
-$lang_module['title'] = 'Title';
-$lang_module['description'] = 'Description';
-$lang_module['status'] = 'Status';
-$lang_module['author'] = 'Author';
-$lang_module['add_time'] = 'Post time';
-```
-
----
-
-## Directory Structure Summary
-
-For a module named `<module_name>`, the complete frontend structure should be:
-
-```
-nukeviet/
-├── themes/
-│   ├── admin_default/
-│   │   ├── css/
-│   │   │   └── <module_name>.css
-│   │   ├── js/
-│   │   │   └── <module_name>.js
-│   │   └── modules/
-│   │       └── <module_name>/
-│   │           ├── main.tpl
-│   │           ├── add_entry.tpl
-│   │           ├── edit_entry.tpl
-│   │           └── ... (other .tpl files)
-│   │
-│   └── default/
-│       ├── css/
-│       │   └── <module_name>.css
-│       ├── js/
-│       │   └── <module_name>.js
-│       └── modules/
-│           └── <module_name>/
-│               ├── main.tpl
-│               ├── detail.tpl
-│               ├── search.tpl
-│               └── ... (other .tpl files)
-│
-└── modules/
-    └── <module_name>/
-        ├── admin/
-        │   ├── main.php
-        │   ├── add_entry.php
-        │   ├── edit_entry.php
-        │   └── ... (other admin PHP files)
-        ├── funcs/
-        │   ├── main.php
-        │   ├── detail.php
-        │   ├── search.php
-        │   └── ... (other site PHP files)
-        └── language/
-            ├── en.php
-            ├── vi.php
-            ├── fr.php
-            └── ... (other language files)
-```
-
----
-
-## Best Practices
-
-### 1. Consistent Naming
-- Always use the same naming pattern for PHP files and their corresponding templates
-- Use lowercase with underscores for multi-word file names
-- Example: `word_detail.php` → `word_detail.tpl`
-
-### 2. Modular CSS
-- Keep module-specific styles in the module's CSS file
-- Avoid global style pollution
-- Use module-specific class prefixes when necessary
-- Example: `.dictionary-word`, `.dictionary-definition`
-
-### 3. Modular JavaScript
-- Encapsulate module functionality to avoid conflicts
-- Use namespacing or IIFEs (Immediately Invoked Function Expressions)
-- Example:
-```javascript
-(function($) {
-    'use strict';
-    
-    var DictionaryModule = {
-        init: function() {
-            // Module initialization
-        }
-    };
-    
-    $(document).ready(function() {
-        DictionaryModule.init();
-    });
-})(jQuery);
-```
-
-### 4. Template Organization
-- Use clear block names in templates
-- Follow XTemplate syntax conventions
-- Keep templates simple and focused on presentation
-- Pass all data from PHP to templates
-
-### 5. Asset Management
-- The framework automatically loads assets based on:
-  - Current module name
-  - Current theme
-  - Current page type (admin/site)
-- No need to manually include CSS/JS files in templates if following the naming conventions
-
-### 6. Language Management
-- Always define user-facing text in language files
-- Use `$nv_Lang->getModule('key')` in PHP code for module-specific text
-- Use `$nv_Lang->getGlobal('key')` in PHP code for global text
-- Assign language arrays to templates: `$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);`
-- Use `{LANG.key}` and `{GLANG.key}` in templates
-- Maintain consistency across all language files (same keys, different values)
-
----
-
-## XTemplate Integration in PHP
-
-### Basic Template Loading
-
-```php
-// In your module's PHP file
-$xtpl = new XTemplate('template_name.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
-
-// Assign variables
-$xtpl->assign('LANG', $lang_module);
-$xtpl->assign('DATA', $data);
-
-// Parse blocks
-$xtpl->parse('main.loop');
-$xtpl->parse('main');
-
-// Output
-$contents = $xtpl->text('main');
-```
-
-### Admin Template Loading
-
-```php
-// In admin files
-$xtpl = new XTemplate('template_name.tpl', NV_ROOTDIR . '/themes/' . $global_config['admin_theme'] . '/modules/' . $module_file);
-```
-
----
-
-## Common Pitfalls to Avoid
-
-### Template & File Organization
-1. **❌ Mismatched file names**: PHP file and template file names don't match
-2. **❌ Wrong directory**: Placing templates in the module directory instead of themes
-3. **❌ Missing module directory**: Forgetting to create the module subdirectory in themes
-4. **❌ Hard-coded theme names**: Always use `$global_config['module_theme']` or `$global_config['admin_theme']`
-5. **❌ Inline styles/scripts**: Always use external CSS/JS files in the proper directories
-
-### Language & Localization
-6. **❌ Hardcoded text**: Putting user-facing text directly in PHP or templates instead of language files
-7. **❌ Inconsistent language keys**: Different language files having different sets of keys
-8. **❌ Missing language assignment**: Forgetting to assign `LANG` and `GLANG` to templates
-9. **❌ Wrong language method**: Using `$lang_module['key']` directly instead of `$nv_Lang->getModule('key')` in PHP
-10. **❌ Missing security check**: Forgetting the `if (!defined('NV_MAINFILE'))` check in language files
-
----
-
-## Checklist for New Module Frontend
-
-When creating frontend assets for a new module, verify:
-
-### Directory Structure
-- [ ] Created `/themes/admin_default/modules/<module_name>/` directory
-- [ ] Created `/themes/default/modules/<module_name>/` directory
-- [ ] Created `/modules/<module_name>/language/` directory
-
-### Asset Files
-- [ ] Created `/themes/admin_default/css/<module_name>.css` (if needed)
-- [ ] Created `/themes/default/css/<module_name>.css` (if needed)
-- [ ] Created `/themes/admin_default/js/<module_name>.js` (if needed)
-- [ ] Created `/themes/default/js/<module_name>.js` (if needed)
-
-### Template Files
-- [ ] All `.tpl` file names match their corresponding `.php` files
-- [ ] Templates use proper XTemplate syntax
-- [ ] PHP files correctly load templates using appropriate theme paths
-- [ ] Language variables (`LANG` and `GLANG`) are properly assigned in PHP
-- [ ] Templates use `{LANG.key}` and `{GLANG.key}` instead of hardcoded text
-
-### Language Files
-- [ ] Created language files for all supported languages (e.g., `en.php`, `vi.php`)
-- [ ] All language files have the same keys with different translations
-- [ ] Language files include proper metadata (`$lang_translator` array)
-- [ ] All user-facing text is defined in language files
-- [ ] PHP files use `$nv_Lang->getModule()` and `$nv_Lang->getGlobal()` correctly
-
----
-
-## Version Information
-
-- **Document Version**: 2.0
-- **Last Updated**: October 11, 2025
-- **Changelog**:
-  - v2.0: Added comprehensive Language/Localization section
-  - v1.0: Initial document with CSS, JavaScript, and HTML template organization
-- **NukeViet Version Compatibility**: 4.x and above
-
----
-
-## Additional Resources
-
-- NukeViet Official Documentation: https://nukeviet.vn/
-- XTemplate Documentation: See `/includes/xtemplate.class.php`
-- Theme Development Guide: See official NukeViet documentation
-
----
-
-**Note:** This structure ensures maintainability, theme flexibility, and follows NukeViet CMS best practices. Always follow these conventions for consistent and professional module development.
-
-
+# NukeViet CMS - Agent Development Guide
+
+## Quick Start
+1. **Read CLAUDE.md first** for comprehensive architecture, lifecycle, and conventions
+2. **Check .cursor/rules/nukeviet-frontend-rule.mdc** for detailed frontend asset organization
+3. **Understand the flow**: `index.php` → `includes/mainfile.php` → routing → module execution → templates
+4. **Key principle**: Convention-based framework - follow naming patterns strictly for auto-loading to work
+
+## Build/Test Commands
+- **Start/Stop XAMPP**: `sudo /opt/lampp/lampp start|stop`
+- **Database Access**: `/opt/lampp/bin/mysql -u root -p`
+- **Fix Permissions**: `bash nukeviet_fix_permissions.sh`
+- **View PHP Errors**: `tail -f /opt/lampp/logs/php_error_log`
+- **Clear Cache**: Delete contents of `data/cache/` or use admin cache management
+- **No formal test suite**: Manual testing via browser (Frontend: `http://localhost/nukeviet/`, Admin: `http://localhost/nukeviet/admin/`)
+
+## Code Style
+
+### File Structure & Security
+- **Security check required**: All PHP files must start with `if (!defined('NV_IS_MOD_<MODULE>')) { exit('Stop!!!'); }` (frontend) or `if (!defined('NV_IS_<MODULE>_ADMIN')) { exit('Stop!!!'); }` (admin)
+- **Module structure**: `modules/<module>/admin/` (admin), `modules/<module>/funcs/` (frontend), `modules/<module>/language/` (i18n)
+- **Templates**: `themes/admin_default/modules/<module>/*.tpl` (admin), `themes/default/modules/<module>/*.tpl` (site) - filename must match PHP file
+- **Assets**: Auto-loaded from `themes/<theme>/css/<module>.css` and `themes/<theme>/js/<module>.js`
+
+### Naming Conventions
+- **Files/directories**: `lowercase_with_underscores` (e.g., `entry_add.php`)
+- **Variables**: `$snake_case` (e.g., `$page_title`, `$module_data`)
+- **Constants**: `SCREAMING_SNAKE_CASE` with `NV_` prefix (e.g., `NV_ROOTDIR`, `NV_CURRENTTIME`)
+- **Language keys**: `lowercase_with_underscores` and descriptive (e.g., `$lang_module['error_empty_headword']`)
+- **CSS classes**: Module-specific prefixes (e.g., `.dictionary-word`, `.dictionary-definition`)
+
+### Language/Localization
+- **Never hardcode text**: All user-facing text in `modules/<module>/language/{en,vi}.php`
+- **PHP usage**: `$nv_Lang->getModule('key')` (module-specific), `$nv_Lang->getGlobal('key')` (global)
+- **Template usage**: `{LANG.key}` (module), `{GLANG.key}` (global)
+- **Template assignment**: `$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module); $xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);`
+
+### Database
+- **Access via**: `$db` (write), `$db_slave` (read) - PDO-based `NukeViet\Core\Database`
+- **Table naming**: `NV_PREFIXLANG . '_' . $module_data . '_<table>'` (e.g., `nv4_vi_dictionary_entries`)
+- **Input handling**: Use `$nv_Request->get_int()`, `get_string()`, `get_title()` - never raw `$_GET/$_POST/$_COOKIE`
+- **CSRF protection**: Validate with `$nv_Request->get_title('checkss', 'post', '')` === `md5(NV_CHECK_SESSION)`
+
+### Templating (XTemplate)
+- **Pattern**: `$xtpl = new XTemplate('file.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);`
+- **Blocks**: `<!-- BEGIN: name -->...<!-- END: name -->`
+- **Variables**: `{VARIABLE}` in templates, `$xtpl->assign('VARIABLE', $value)` in PHP
+- **Output**: `$xtpl->parse('main'); $contents = $xtpl->text('main');`
+
+### Error Handling
+- **Try-catch**: Use for database operations and file uploads
+- **PRG pattern**: Store errors in `$_SESSION`, redirect to prevent resubmission
+- **Validation**: Collect all errors in `$errors[]` array before displaying
+
+### Best Practices
+- **Never hardcode paths**: Use `$global_config['module_theme']` / `$global_config['admin_theme']`, never literal theme names
+- **Use framework functions**: `change_alias()` (slugs), `nv_redirect_location()` (redirects), `nv_jsonOutput()` (AJAX)
+- **Autoloading**: PSR-4 via Composer - `NukeViet\` namespace maps to `includes/vendor/vinades/nukeviet/`
+- **Constants**: `NV_ROOTDIR`, `NV_LANG_DATA`, `NV_CURRENTTIME`, `NV_CHECK_SESSION`
+
+## When to Use Sequential Thinking
+Use the sequential-thinking tool for complex tasks requiring careful analysis:
+- **Database schema design**: Analyze relationships, indexes, performance implications, migration strategy
+- **Module architecture**: Plan file structure, routing, security boundaries, data flow across components
+- **Security implementations**: Validate CSRF protection, input sanitization, permission checks, SQL injection prevention
+- **Multi-step features**: Break down dependencies, identify edge cases, plan error handling, ensure transaction safety
+- **Performance optimization**: Analyze query patterns, caching strategy, N+1 problems, bottleneck identification
+- **Debugging complex issues**: Trace execution flow across multiple files/layers, identify root cause vs symptoms
+
+**Why use it**: NukeViet has strict conventions and security requirements. Sequential thinking helps avoid introducing bugs, security holes, or architectural inconsistencies that would require refactoring.
+
+## Common Workflows
+
+### Adding a New Admin Page
+1. Create PHP file: `modules/<module>/admin/<page>.php` with security check `if (!defined('NV_IS_<MODULE>_ADMIN')) { exit('Stop!!!'); }`
+2. Create template: `themes/admin_default/modules/<module>/<page>.tpl` (filename MUST match PHP file)
+3. Add language keys: `modules/<module>/language/{en,vi}.php` (all user-facing text)
+4. Update admin menu: `modules/<module>/admin.menu.php` if adding to navigation
+5. Load template: `$xtpl = new XTemplate('<page>.tpl', NV_ROOTDIR . '/themes/' . $global_config['admin_theme'] . '/modules/' . $module_file);`
+6. Assign language: `$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);`
+7. Test: Clear cache (`data/cache/`), visit `http://localhost/nukeviet/admin/`
+
+### Adding a New Frontend Page
+1. Create PHP file: `modules/<module>/funcs/<page>.php` with security check `if (!defined('NV_IS_MOD_<MODULE>')) { exit('Stop!!!'); }`
+2. Create template: `themes/default/modules/<module>/<page>.tpl`
+3. Add language keys: Same language files as admin
+4. Use `$global_config['module_theme']` for template path (NOT `admin_theme`)
+5. Output: `$contents = nv_<module>_<page>($data); include NV_ROOTDIR . '/includes/header.php'; echo nv_site_theme($contents);`
+
+### Form Handling with PRG Pattern
+1. Validate input: Collect errors in `$errors[]` array
+2. If errors: Store in session → `$_SESSION['<module>_form_errors'] = $errors; $_SESSION['<module>_form_data'] = $data;`
+3. Redirect: `nv_redirect_location(NV_BASE_ADMINURL . 'index.php?...')`
+4. On page load: Check session for errors/data, display, then `unset()`
+5. On success: Store success message in session, redirect to list/detail page
+
+### Database Operations
+1. Use prepared statements: `$stmt = $db->prepare('SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_table WHERE id = :id');`
+2. Bind parameters: `$stmt->bindParam(':id', $id, PDO::PARAM_INT);`
+3. Execute: `$stmt->execute();`
+4. Fetch: `$row = $stmt->fetch();` or `$rows = $stmt->fetchAll();`
+5. Wrap in try-catch for INSERT/UPDATE/DELETE operations
+
+## Common Pitfalls (CRITICAL - AVOID THESE)
+
+### 1. Mismatched Template Filenames
+❌ **Wrong**: PHP file `entry_add.php` → Template `add_entry.tpl`  
+✅ **Correct**: PHP file `entry_add.php` → Template `entry_add.tpl`  
+**Why**: Convention-based template loading will fail silently or throw errors
+
+### 2. Hardcoded Text
+❌ **Wrong**: `echo "Add New Entry";` or `<h1>Add New Entry</h1>`  
+✅ **Correct**: `$nv_Lang->getModule('add')` (PHP) or `{LANG.add}` (template)  
+**Why**: Breaks multi-language support, violates framework conventions
+
+### 3. Hardcoded Theme Paths
+❌ **Wrong**: `NV_ROOTDIR . '/themes/admin_default/modules/' . $module_file`  
+✅ **Correct**: `NV_ROOTDIR . '/themes/' . $global_config['admin_theme'] . '/modules/' . $module_file`  
+**Why**: Breaks when users change themes
+
+### 4. Missing Security Checks
+❌ **Wrong**: PHP file starts directly with logic  
+✅ **Correct**: First line after `<?php` and comments: `if (!defined('NV_IS_MOD_<MODULE>')) { exit('Stop!!!'); }`  
+**Why**: Direct file access bypasses authentication and security checks
+
+### 5. Raw Input Access
+❌ **Wrong**: `$id = $_GET['id'];` or `$name = $_POST['name'];`  
+✅ **Correct**: `$id = $nv_Request->get_int('id', 'get', 0);` or `$name = $nv_Request->get_title('name', 'post', '');`  
+**Why**: SQL injection, XSS vulnerabilities
+
+### 6. Missing CSRF Validation
+❌ **Wrong**: Process form without checking session token  
+✅ **Correct**: `if ($nv_Request->get_title('checkss', 'post', '') !== md5(NV_CHECK_SESSION)) { /* error */ }`  
+**Why**: CSRF attacks can manipulate user actions
+
+### 7. Inconsistent Language Keys
+❌ **Wrong**: `en.php` has `'add_entry'` but `vi.php` has `'them_moi'` (different key)  
+✅ **Correct**: Both files use `'add_entry'` with different values  
+**Why**: Language switching will show missing translation errors
+
+### 8. Forgetting to Assign LANG to Templates
+❌ **Wrong**: Template uses `{LANG.add}` but PHP never assigns it  
+✅ **Correct**: `$xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);`  
+**Why**: Template variables will be empty/undefined
+
+## Debugging Guide
+
+### When Something Doesn't Work
+1. **Check PHP error log**: `tail -f /opt/lampp/logs/php_error_log`
+2. **Clear cache**: Delete `data/cache/*` contents (keep index.html)
+3. **Verify file permissions**: Run `bash nukeviet_fix_permissions.sh`
+4. **Check security constant**: Ensure correct `NV_IS_MOD_<MODULE>` or `NV_IS_<MODULE>_ADMIN` in if statement
+5. **Verify template path**: Check theme name variable, module name, filename match
+6. **Check database table name**: Must use `NV_PREFIXLANG . '_' . $module_data . '_table'` pattern
+7. **Inspect browser console**: For JavaScript errors or failed AJAX requests
+8. **Check admin menu**: Verify `admin.menu.php` has correct operation name
+
+### Common Error Messages
+- **"Stop!!!"**: Security check failed - wrong constant or file accessed directly
+- **Template not found**: Filename mismatch or wrong theme path
+- **Undefined variable LANG**: Forgot to assign language to template
+- **SQL error**: Wrong table name format or missing prepared statement binding
+- **404 on module page**: Check `modules/<module>/version.php` and module installation
+
+## File Reference Quick Guide
+- **Core bootstrap**: `includes/mainfile.php`
+- **Database class**: `includes/vendor/vinades/nukeviet/Core/Database.php`
+- **Request handler**: `includes/vendor/vinades/nukeviet/Core/Request.php`
+- **XTemplate engine**: `includes/xtemplate.class.php`
+- **Common functions**: `includes/functions.php`
+- **Admin controller**: `admin/index.php`
+- **Frontend controller**: `index.php`
+
+See `.cursor/rules/nukeviet-frontend-rule.mdc` and `CLAUDE.md` for detailed frontend conventions and architecture.

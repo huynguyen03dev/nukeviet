@@ -323,9 +323,10 @@ $xtpl->assign('OP', 'entry_edit');
 $xtpl->assign('ID', $id);
 $xtpl->assign('CHECKSS', md5(NV_CHECK_SESSION));
 
-// Prefill data
+// Prefill data (avoid passing null to htmlspecialchars)
 foreach ($data as $k => $v) {
-    $xtpl->assign(strtoupper($k), htmlspecialchars($v, ENT_QUOTES, 'UTF-8'));
+    $safeValue = $v === null ? '' : (string) $v;
+    $xtpl->assign(strtoupper($k), htmlspecialchars($safeValue, ENT_QUOTES, 'UTF-8'));
 }
 
 // Handle existing audio file display
@@ -342,9 +343,9 @@ if (!empty($existing_examples)) {
         $xtpl->assign('EXAMPLE', [
             'id' => $example['id'],
             'num' => $idx + 1,
-            'sentence_en' => htmlspecialchars($example['sentence_en'], ENT_QUOTES, 'UTF-8'),
-            'translation_vi' => htmlspecialchars($example['translation_vi'], ENT_QUOTES, 'UTF-8'),
-            'audio_file' => isset($example['audio_file']) ? htmlspecialchars($example['audio_file'], ENT_QUOTES, 'UTF-8') : '',
+            'sentence_en' => htmlspecialchars((string) ($example['sentence_en'] ?? ''), ENT_QUOTES, 'UTF-8'),
+            'translation_vi' => htmlspecialchars((string) ($example['translation_vi'] ?? ''), ENT_QUOTES, 'UTF-8'),
+            'audio_file' => !empty($example['audio_file']) ? htmlspecialchars((string) $example['audio_file'], ENT_QUOTES, 'UTF-8') : '',
             'audio_url' => !empty($example['audio_file']) ? NV_BASE_SITEURL . 'uploads/' . $module_name . '/audio/' . $example['audio_file'] : ''
         ]);
         if (!empty($example['audio_file'])) {

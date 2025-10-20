@@ -88,3 +88,16 @@ $lang_module['no_results'] = 'Không tìm thấy từ nào phù hợp';
 $lang_module['loading'] = 'Đang tải...';
 $lang_module['select_word'] = 'Chọn một từ từ danh sách gợi ý';
 
+// Audio
+$lang_module['audio_pronunciation'] = 'Phát âm';
+$lang_module['upload_audio'] = 'Tải lên âm thanh';
+$lang_module['audio_optional'] = 'Tùy chọn - MP3 hoặc WAV, tối đa 5MB';
+$lang_module['current_audio'] = 'Tệp âm thanh hiện tại';
+$lang_module['replace_audio'] = 'Thay thế âm thanh';
+$lang_module['delete_audio'] = 'Xóa âm thanh';
+$lang_module['example_audio'] = 'Âm thanh ví dụ';
+
+// Audio - errors
+$lang_module['error_audio_size'] = 'Kích thước tệp âm thanh vượt quá 5MB';
+$lang_module['error_audio_type'] = 'Chỉ cho phép tệp MP3 và WAV';
+$lang_module['error_audio_upload'] = 'Không thể tải lên tệp âm thanh';

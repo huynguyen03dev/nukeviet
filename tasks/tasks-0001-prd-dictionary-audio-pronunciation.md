@@ -130,21 +130,21 @@ Based on PRD: `0001-prd-dictionary-audio-pronunciation.md`
     - [x] 4.4.4 Add hover effects for enabled speaker icons
     - [x] 4.4.5 Ensure responsive design (appropriate sizes for mobile devices)
 
-- [ ] 5.0 Add language keys for audio-related UI text
-  - [ ] 5.1 Update `/modules/dictionary/language/en.php`:
-    - [ ] 5.1.1 Add `$lang_module['audio_pronunciation']` = "Audio Pronunciation"
-    - [ ] 5.1.2 Add `$lang_module['upload_audio']` = "Upload Audio"
-    - [ ] 5.1.3 Add `$lang_module['audio_optional']` = "Optional - MP3 or WAV, max 5MB"
-    - [ ] 5.1.4 Add `$lang_module['current_audio']` = "Current audio file"
-    - [ ] 5.1.5 Add `$lang_module['replace_audio']` = "Replace audio"
-    - [ ] 5.1.6 Add `$lang_module['delete_audio']` = "Delete audio"
-    - [ ] 5.1.7 Add `$lang_module['example_audio']` = "Example Audio"
-    - [ ] 5.1.8 Add error messages: `$lang_module['error_audio_size']` = "Audio file size exceeds 5MB"
-    - [ ] 5.1.9 Add error messages: `$lang_module['error_audio_type']` = "Only MP3 and WAV files are allowed"
-    - [ ] 5.1.10 Add error messages: `$lang_module['error_audio_upload']` = "Failed to upload audio file"
-  - [ ] 5.2 Update `/modules/dictionary/language/vi.php` with Vietnamese translations:
-    - [ ] 5.2.1 Add corresponding Vietnamese translations for all keys added in 5.1
-    - [ ] 5.2.2 Ensure translation quality and natural phrasing in Vietnamese
+- [x] 5.0 Add language keys for audio-related UI text
+  - [x] 5.1 Update `/modules/dictionary/language/en.php`:
+    - [x] 5.1.1 Add `$lang_module['audio_pronunciation']` = "Audio Pronunciation"
+    - [x] 5.1.2 Add `$lang_module['upload_audio']` = "Upload Audio"
+    - [x] 5.1.3 Add `$lang_module['audio_optional']` = "Optional - MP3 or WAV, max 5MB"
+    - [x] 5.1.4 Add `$lang_module['current_audio']` = "Current audio file"
+    - [x] 5.1.5 Add `$lang_module['replace_audio']` = "Replace audio"
+    - [x] 5.1.6 Add `$lang_module['delete_audio']` = "Delete audio"
+    - [x] 5.1.7 Add `$lang_module['example_audio']` = "Example Audio"
+    - [x] 5.1.8 Add error messages: `$lang_module['error_audio_size']` = "Audio file size exceeds 5MB"
+    - [x] 5.1.9 Add error messages: `$lang_module['error_audio_type']` = "Only MP3 and WAV files are allowed"
+    - [x] 5.1.10 Add error messages: `$lang_module['error_audio_upload']` = "Failed to upload audio file"
+  - [x] 5.2 Update `/modules/dictionary/language/vi.php` with Vietnamese translations:
+    - [x] 5.2.1 Add corresponding Vietnamese translations for all keys added in 5.1
+    - [x] 5.2.2 Ensure translation quality and natural phrasing in Vietnamese
 
 ---
 

@@ -34,10 +34,14 @@
         <div class="panel-heading">
             <h3 class="panel-title">
                 <span id="word-headword"></span>
+                <i class="fa fa-volume-up dictionary-speaker-icon" id="headword-speaker" style="display:none;" title="{LANG.play_pronunciation}"></i>
                 <span id="word-pos" class="badge"></span>
             </h3>
         </div>
         <div class="panel-body">
+            <!-- Hidden audio element for headword -->
+            <audio id="headword-audio" preload="none" style="display:none;"></audio>
+            
             <!-- Phonetic -->
             <div id="word-phonetic-container" style="display:none;">
                 <p class="dictionary-phonetic">

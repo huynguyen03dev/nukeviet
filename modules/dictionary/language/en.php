@@ -87,3 +87,16 @@ $lang_module['no_results'] = 'No words found matching your search';
 $lang_module['loading'] = 'Loading...';
 $lang_module['select_word'] = 'Select a word from the suggestions';
 
+// Audio
+$lang_module['audio_pronunciation'] = 'Audio Pronunciation';
+$lang_module['upload_audio'] = 'Upload Audio';
+$lang_module['audio_optional'] = 'Optional - MP3 or WAV, max 5MB';
+$lang_module['current_audio'] = 'Current audio file';
+$lang_module['replace_audio'] = 'Replace audio';
+$lang_module['delete_audio'] = 'Delete audio';
+$lang_module['example_audio'] = 'Example Audio';
+
+// Audio - errors
+$lang_module['error_audio_size'] = 'Audio file size exceeds 5MB';
+$lang_module['error_audio_type'] = 'Only MP3 and WAV files are allowed';
+$lang_module['error_audio_upload'] = 'Failed to upload audio file';

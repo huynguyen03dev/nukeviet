@@ -79,31 +79,43 @@ if ($action == 'getword') {
     }
     
     // Get examples
-    $sql = 'SELECT id, sentence_en, translation_vi FROM ' . NV_DICTIONARY_GLOBALTABLE . '_examples 
+    $sql = 'SELECT id, sentence_en, translation_vi, audio_file FROM ' . NV_DICTIONARY_GLOBALTABLE . '_examples 
             WHERE entry_id = ' . $id . ' 
             ORDER BY sort ASC, id ASC';
     $result = $db->query($sql);
     
     $examples = [];
     while ($row = $result->fetch()) {
-        $examples[] = [
+        $example_data = [
             'sentence_en' => $row['sentence_en'],
             'translation_vi' => $row['translation_vi']
         ];
+        
+        if (!empty($row['audio_file'])) {
+            $example_data['audio_url'] = NV_BASE_SITEURL . 'uploads/' . $module_data . '/audio/' . $row['audio_file'];
+        }
+        
+        $examples[] = $example_data;
+    }
+    
+    $response_data = [
+        'id' => (int) $entry['id'],
+        'headword' => $entry['headword'],
+        'slug' => $entry['slug'],
+        'pos' => $entry['pos'],
+        'phonetic' => $entry['phonetic'],
+        'meaning_vi' => $entry['meaning_vi'],
+        'notes' => $entry['notes'],
+        'examples' => $examples
+    ];
+    
+    if (!empty($entry['audio_file'])) {
+        $response_data['audio_url'] = NV_BASE_SITEURL . 'uploads/' . $module_data . '/audio/' . $entry['audio_file'];
     }
     
     nv_jsonOutput([
         'status' => 'success',
-        'data' => [
-            'id' => (int) $entry['id'],
-            'headword' => $entry['headword'],
-            'slug' => $entry['slug'],
-            'pos' => $entry['pos'],
-            'phonetic' => $entry['phonetic'],
-            'meaning_vi' => $entry['meaning_vi'],
-            'notes' => $entry['notes'],
-            'examples' => $examples
-        ]
+        'data' => $response_data
     ]);
 }
 
