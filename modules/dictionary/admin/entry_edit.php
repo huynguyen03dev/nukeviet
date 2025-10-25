@@ -141,7 +141,16 @@ if ($nv_Request->isset_request('submit', 'post')) {
                 continue;
             }
 
-            $upload_info = $upload->save_file($_FILES['ex_audio'], NV_ROOTDIR . '/' . NV_TEMP_DIR, false, $idx);
+            // Restructure multiple file array to single file format for Upload class
+            $single_file = [
+                'name' => $_FILES['ex_audio']['name'][$idx],
+                'type' => $_FILES['ex_audio']['type'][$idx],
+                'tmp_name' => $_FILES['ex_audio']['tmp_name'][$idx],
+                'error' => $_FILES['ex_audio']['error'][$idx],
+                'size' => $_FILES['ex_audio']['size'][$idx]
+            ];
+
+            $upload_info = $upload->save_file($single_file, NV_ROOTDIR . '/' . NV_TEMP_DIR, false);
             if (empty($upload_info['error'])) {
                 $example_audio_temp_files[$idx] = $upload_info['name'];
             } else {

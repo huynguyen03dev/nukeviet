@@ -411,7 +411,8 @@
 
 /* Example speaker icon placement */
 .dictionary-example-speaker {
-    margin-right: 6px;
+    float: right;
+    margin-left: 8px;
 }
 
 /* Disabled state */

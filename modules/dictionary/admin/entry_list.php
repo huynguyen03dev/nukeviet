@@ -38,7 +38,7 @@ if ($nv_Request->isset_request('delete', 'post')) {
         if ($entry && !empty($entry['audio_file'])) {
             $audio_path = NV_ROOTDIR . '/uploads/' . $module_name . '/audio/' . $entry['audio_file'];
             if (file_exists($audio_path)) {
-                @unlink($audio_path);
+                nv_deletefile($audio_path);
             }
         }
         
@@ -46,7 +46,7 @@ if ($nv_Request->isset_request('delete', 'post')) {
         foreach ($example_audios as $audio_file) {
             $audio_path = NV_ROOTDIR . '/uploads/' . $module_name . '/audio/' . $audio_file;
             if (file_exists($audio_path)) {
-                @unlink($audio_path);
+                nv_deletefile($audio_path);
             }
         }
         

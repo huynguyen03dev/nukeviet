@@ -356,8 +356,8 @@
                 
                 examples_html += '<div class="dictionary-example-item">';
                 examples_html += '<div class="dictionary-example-en">' + 
-                    speaker_icon_html + ' ' +
-                    nv_dictionary_escape_html(example.sentence_en) + '</div>';
+                    '<span class="dictionary-example-text">' + nv_dictionary_escape_html(example.sentence_en) + '</span>' +
+                    speaker_icon_html + '</div>';
                 if (example.translation_vi) {
                     examples_html += '<div class="dictionary-example-vi">' + 
                         nv_dictionary_escape_html(example.translation_vi) + '</div>';
