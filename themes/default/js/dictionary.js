@@ -489,11 +489,21 @@
         // Autocomplete item click event (delegated)
         $autocomplete_results.on('click', '.list-group-item', function(e) {
             e.preventDefault();
+            e.stopPropagation();
+            
+            // Hide autocomplete immediately
+            nv_dictionary_hide_autocomplete();
+            
+            // Clear any pending autocomplete timer
+            if (typing_timer) {
+                clearTimeout(typing_timer);
+                typing_timer = null;
+            }
+            
             var word_id = $(this).data('id');
             var text = $(this).find('.word-text').text();
             $search_input.val(text);
             nv_dictionary_load_word_details(word_id);
-            nv_dictionary_hide_autocomplete();
         });
         
         // Autocomplete item hover
