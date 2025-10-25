@@ -60,6 +60,7 @@ $(function() {
             var langTranslationPlaceholder = document.body.dataset.langExampleTranslationPlaceholder || 'Vietnamese translation (optional)';
             var langExampleAudio = document.body.dataset.langExampleAudio || 'Example Audio';
             var langAudioOptional = document.body.dataset.langAudioOptional || 'Optional - MP3 or WAV, max 5MB';
+            var langUploadAudio = document.body.dataset.langUploadAudioBtn || 'Upload Audio';
 
             item.innerHTML = '<div class="example-header">' +
                 '<span class="example-number">' + langExample + ' ' + (currentCount + 1) + '</span>' +
@@ -75,8 +76,24 @@ $(function() {
               '</div>' +
               '<div class="example-row">' +
                 '<label>' + langExampleAudio + '</label>' +
-                '<input type="file" name="ex_audio[]" accept="audio/mp3,audio/mpeg,audio/wav">' +
-                '<small class="help-text">' + langAudioOptional + '</small>' +
+                '<div class="audio-card audio-card-empty">' +
+                  '<div class="audio-card-header">' +
+                    '<span class="audio-card-icon"><i class="fa fa-music"></i></span>' +
+                    '<div class="audio-card-content">' +
+                      '<div class="audio-card-filename">No audio file</div>' +
+                    '</div>' +
+                  '</div>' +
+                  '<div class="audio-card-actions">' +
+                    '<button type="button" class="btn-audio-action btn-audio-upload">' +
+                      '<i class="fa fa-upload"></i> ' + langUploadAudio +
+                    '</button>' +
+                  '</div>' +
+                  '<div class="audio-file-input-wrapper show">' +
+                    '<input type="file" name="ex_audio[]" accept="audio/mpeg,audio/wav">' +
+                    '<div class="audio-file-feedback"></div>' +
+                    '<small class="audio-help-text-card">' + langAudioOptional + '</small>' +
+                  '</div>' +
+                '</div>' +
               '</div>';
 
             container.appendChild(item);
@@ -108,6 +125,122 @@ $(function() {
                 }, 200);
             }
         });
+    }
+
+    // ===== AUDIO CARD CONTROLS =====
+    function initAudioCardControls() {
+        var audioCards = document.querySelectorAll('.audio-card');
+        
+        audioCards.forEach(function(card) {
+            initAudioCardEventHandlers(card);
+        });
+    }
+
+    function initAudioCardEventHandlers(card) {
+        var btnReplace = card.querySelector('.btn-audio-replace');
+        var btnUpload = card.querySelector('.btn-audio-upload');
+        var btnRemove = card.querySelector('.btn-audio-remove');
+        var btnUndo = card.querySelector('.btn-audio-undo');
+        var fileInput = card.querySelector('input[type="file"]');
+        var deleteCheckbox = card.querySelector('input[type="hidden"][name="delete_audio"], input[type="hidden"][name^="ex_delete_audio"]');
+        var fileInputWrapper = card.querySelector('.audio-file-input-wrapper');
+        var fileFeedback = card.querySelector('.audio-file-feedback');
+        
+        // DEBUG: Log initialization
+        console.log('[Dictionary Init] Audio card initialized');
+        console.log('[Dictionary Init] Delete checkbox found:', deleteCheckbox);
+        if (deleteCheckbox) {
+            console.log('[Dictionary Init] Checkbox name:', deleteCheckbox.name, 'Initial value:', deleteCheckbox.value);
+        }
+
+        // Upload/Replace button click
+        var uploadReplaceBtn = btnUpload || btnReplace;
+        if (uploadReplaceBtn) {
+            uploadReplaceBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (fileInputWrapper) {
+                    fileInputWrapper.classList.toggle('show');
+                    if (fileInputWrapper.classList.contains('show')) {
+                        if (fileInput) fileInput.focus();
+                    }
+                }
+            });
+        }
+
+        // File input change event
+        if (fileInput) {
+            fileInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    var filename = this.files[0].name;
+                    if (fileFeedback) {
+                        var isReplace = btnReplace !== null;
+                        var message = isReplace ? 'New file selected: ' : 'File selected: ';
+                        fileFeedback.textContent = message + filename;
+                        fileFeedback.classList.add('show');
+                    }
+                } else {
+                    if (fileFeedback) {
+                        fileFeedback.classList.remove('show');
+                        fileFeedback.textContent = '';
+                    }
+                }
+            });
+        }
+
+        // Remove button click
+        if (btnRemove) {
+            btnRemove.addEventListener('click', function(e) {
+                e.preventDefault();
+                card.classList.add('audio-card-marked-delete');
+                if (deleteCheckbox) {
+                    // For hidden inputs, only set the value (not checked)
+                    deleteCheckbox.value = 1;
+                    console.log('[Dictionary] Remove clicked - set delete_audio to:', deleteCheckbox.value, 'Name:', deleteCheckbox.name);
+                } else {
+                    console.log('[Dictionary] ERROR: deleteCheckbox not found!');
+                }
+                // Hide file input when marked for deletion
+                if (fileInputWrapper) {
+                    fileInputWrapper.classList.remove('show');
+                }
+            });
+        }
+
+        // Undo button click
+        if (btnUndo) {
+            btnUndo.addEventListener('click', function(e) {
+                e.preventDefault();
+                card.classList.remove('audio-card-marked-delete');
+                if (deleteCheckbox) {
+                    // For hidden inputs, only set the value (not checked)
+                    deleteCheckbox.value = 0;
+                }
+            });
+        }
+    }
+
+    // Initialize audio card controls when page loads
+    initAudioCardControls();
+
+    // Also handle dynamically added example audio cards
+    var observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                mutation.addedNodes.forEach(function(node) {
+                    if (node.nodeType === 1 && node.classList && node.classList.contains('example-item')) {
+                        var audioCard = node.querySelector('.audio-card');
+                        if (audioCard) {
+                            initAudioCardEventHandlers(audioCard);
+                        }
+                    }
+                });
+            }
+        });
+    });
+
+    var container = document.getElementById('examples-container');
+    if (container) {
+        observer.observe(container, { childList: true });
     }
 });
 

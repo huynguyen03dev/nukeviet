@@ -96,6 +96,15 @@ $lang_module['replace_audio'] = 'Replace audio';
 $lang_module['delete_audio'] = 'Delete audio';
 $lang_module['example_audio'] = 'Example Audio';
 
+// Audio UI - buttons and messages
+$lang_module['upload_audio_btn'] = 'Upload Audio';
+$lang_module['replace_audio_btn'] = 'Replace Audio';
+$lang_module['remove_audio_btn'] = 'Remove';
+$lang_module['undo_remove_audio_btn'] = 'Undo';
+$lang_module['will_be_deleted'] = 'Will be deleted on save';
+$lang_module['new_file_selected'] = 'New file selected: {filename}';
+$lang_module['file_selected'] = 'File selected: {filename}';
+
 // Audio - errors
 $lang_module['error_audio_size'] = 'Audio file size exceeds 5MB';
 $lang_module['error_audio_type'] = 'Only MP3 and WAV files are allowed';

@@ -296,3 +296,262 @@
   }
 }
 
+/* ===== NEW AUDIO CARD STYLES ===== */
+
+/* Audio Card Container */
+.audio-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 12px;
+  background: #fafafa;
+  margin-top: 10px;
+  transition: all 0.3s ease;
+}
+
+.audio-card-has-file {
+  border-color: #d0d0d0;
+  background: #f9f9f9;
+}
+
+.audio-card-empty {
+  border: 2px dashed #d0d0d0;
+  background: #fafafa;
+}
+
+.audio-card-marked-delete {
+  border-color: #d9534f;
+  background: #fdeef0;
+}
+
+.audio-card-marked-delete .audio-card-filename {
+  text-decoration: line-through;
+  color: #d9534f;
+}
+
+.audio-card-marked-delete .audio-player-inline audio {
+  opacity: 0.5;
+}
+
+/* Audio Card Header */
+.audio-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.audio-card-icon {
+  font-size: 18px;
+  color: #5cb85c;
+  flex-shrink: 0;
+}
+
+.audio-card-marked-delete .audio-card-icon {
+  color: #d9534f;
+}
+
+.audio-card-content {
+  flex: 1;
+  min-width: 200px;
+}
+
+.audio-card-filename {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 5px;
+  font-family: monospace;
+  word-break: break-word;
+  padding: 4px 0;
+}
+
+.audio-player-compact {
+  width: 100%;
+  max-width: 100%;
+}
+
+.audio-player-compact audio {
+  width: 100%;
+  height: 30px;
+}
+
+.audio-card-delete-notice {
+  font-size: 11px;
+  color: #d9534f;
+  font-style: italic;
+  margin-top: 5px;
+  font-weight: 500;
+  display: none;
+}
+
+.audio-card-marked-delete .audio-card-delete-notice {
+  display: block;
+}
+
+/* Audio Card Actions */
+.audio-card-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.btn-audio-action {
+  padding: 6px 12px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+}
+
+.btn-audio-upload,
+.btn-audio-replace {
+  background: #5cb85c;
+  color: white;
+  border-color: #4cae4c;
+}
+
+.btn-audio-upload:hover,
+.btn-audio-replace:hover {
+  background: #4cae4c;
+  border-color: #398439;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-audio-remove {
+  background: #d9534f;
+  color: white;
+  border-color: #c9302c;
+}
+
+.btn-audio-remove:hover {
+  background: #c9302c;
+  border-color: #ac2925;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-audio-undo {
+  background: #f0ad4e;
+  color: white;
+  border-color: #eea236;
+  display: none;
+}
+
+.btn-audio-undo:hover {
+  background: #ec971f;
+  border-color: #d58512;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.audio-card-marked-delete .btn-audio-remove {
+  display: none;
+}
+
+.audio-card-marked-delete .btn-audio-undo {
+  display: inline-flex;
+}
+
+/* File Input - Hidden by default */
+.audio-file-input-wrapper {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #e0e0e0;
+  display: none;
+}
+
+.audio-file-input-wrapper.show {
+  display: block;
+}
+
+.audio-file-input-wrapper input[type="file"] {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  background: white;
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.audio-file-input-wrapper input[type="file"]:hover {
+  border-color: #5cb85c;
+}
+
+.audio-file-input-wrapper input[type="file"]:focus {
+  outline: none;
+  border-color: #5cb85c;
+  box-shadow: 0 0 4px rgba(92, 184, 92, 0.3);
+}
+
+/* File Selected Feedback */
+.audio-file-feedback {
+  font-size: 12px;
+  color: #5cb85c;
+  margin-top: 5px;
+  font-style: italic;
+  display: none;
+}
+
+.audio-file-feedback.show {
+  display: block;
+}
+
+/* Hidden checkbox for delete state */
+input[type="checkbox"][name="delete_audio"],
+input[type="checkbox"][name="ex_delete_audio[]"] {
+  display: none;
+}
+
+/* Help text */
+.audio-help-text-card {
+  font-size: 11px;
+  color: #777;
+  font-style: italic;
+  margin-top: 5px;
+}
+
+/* Responsive adjustments for audio cards */
+@media (max-width: 768px) {
+  .audio-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .audio-card-actions {
+    width: 100%;
+  }
+
+  .btn-audio-action {
+    flex: 1;
+    justify-content: center;
+    min-width: 100px;
+  }
+
+  .audio-player-compact {
+    width: 100%;
+  }
+}
+
+/* Example Audio Card Adjustments */
+.example-item .audio-card {
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+
+.example-item .audio-card-actions {
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.example-item .btn-audio-action {
+  padding: 5px 10px;
+  font-size: 11px;
+}
+

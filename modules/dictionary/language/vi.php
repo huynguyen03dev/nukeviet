@@ -97,6 +97,15 @@ $lang_module['replace_audio'] = 'Thay thế âm thanh';
 $lang_module['delete_audio'] = 'Xóa âm thanh';
 $lang_module['example_audio'] = 'Âm thanh ví dụ';
 
+// Audio UI - buttons and messages
+$lang_module['upload_audio_btn'] = 'Tải lên âm thanh';
+$lang_module['replace_audio_btn'] = 'Thay thế âm thanh';
+$lang_module['remove_audio_btn'] = 'Xóa';
+$lang_module['undo_remove_audio_btn'] = 'Hoàn tác';
+$lang_module['will_be_deleted'] = 'Sẽ bị xóa khi lưu';
+$lang_module['new_file_selected'] = 'Tệp mới được chọn: {filename}';
+$lang_module['file_selected'] = 'Tệp được chọn: {filename}';
+
 // Audio - errors
 $lang_module['error_audio_size'] = 'Kích thước tệp âm thanh vượt quá 5MB';
 $lang_module['error_audio_type'] = 'Chỉ cho phép tệp MP3 và WAV';

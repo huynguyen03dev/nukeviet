@@ -63,21 +63,59 @@
         <label class="col-sm-3 control-label">{LANG.upload_audio}</label>
         <div class="col-sm-9">
           <!-- BEGIN: current_audio -->
-          <div class="current-audio-file">
-            <strong>{LANG.current_audio}:</strong> 
-            <a href="{AUDIO_URL}" target="_blank">{AUDIO_FILE}</a>
-            <audio controls style="display:block; margin-top:5px; max-width:100%;">
-              <source src="{AUDIO_URL}" type="audio/mpeg">
-            </audio>
+          <div class="audio-card audio-card-has-file">
+            <div class="audio-card-header">
+              <span class="audio-card-icon"><i class="fa fa-check-circle"></i></span>
+              <div class="audio-card-content">
+                <div class="audio-card-filename">{AUDIO_FILE}</div>
+                <div class="audio-player-compact">
+                  <audio controls>
+                    <source src="{AUDIO_URL}" type="audio/mpeg">
+                  </audio>
+                </div>
+                <div class="audio-card-delete-notice">{LANG.will_be_deleted}</div>
+              </div>
+            </div>
+            <div class="audio-card-actions">
+              <button type="button" class="btn-audio-action btn-audio-replace">
+                <i class="fa fa-refresh"></i> {LANG.replace_audio_btn}
+              </button>
+              <button type="button" class="btn-audio-action btn-audio-remove">
+                <i class="fa fa-trash"></i> {LANG.remove_audio_btn}
+              </button>
+              <button type="button" class="btn-audio-action btn-audio-undo">
+                <i class="fa fa-undo"></i> {LANG.undo_remove_audio_btn}
+              </button>
+            </div>
+            <div class="audio-file-input-wrapper">
+              <input type="file" name="audio" accept="audio/mpeg,audio/wav">
+              <div class="audio-file-feedback"></div>
+              <small class="audio-help-text-card">{LANG.audio_optional}</small>
+            </div>
+            <input type="hidden" name="delete_audio" value="0">
           </div>
           <!-- END: current_audio -->
-          <input type="file" name="audio" class="form-control" accept="audio/mpeg,audio/wav">
-          <small class="help-block">{LANG.audio_optional}</small>
-          <!-- BEGIN: delete_audio -->
-          <label style="margin-top:10px;">
-            <input type="checkbox" name="delete_audio" value="1"> {LANG.delete_audio}
-          </label>
-          <!-- END: delete_audio -->
+          
+          <!-- BEGIN: no_audio -->
+          <div class="audio-card audio-card-empty">
+            <div class="audio-card-header">
+              <span class="audio-card-icon"><i class="fa fa-music"></i></span>
+              <div class="audio-card-content">
+                <div class="audio-card-filename">No audio file</div>
+              </div>
+            </div>
+            <div class="audio-card-actions">
+              <button type="button" class="btn-audio-action btn-audio-upload">
+                <i class="fa fa-upload"></i> {LANG.upload_audio_btn}
+              </button>
+            </div>
+            <div class="audio-file-input-wrapper show">
+              <input type="file" name="audio" accept="audio/mpeg,audio/wav">
+              <div class="audio-file-feedback"></div>
+              <small class="audio-help-text-card">{LANG.audio_optional}</small>
+            </div>
+          </div>
+          <!-- END: no_audio -->
         </div>
       </div>
 
@@ -119,19 +157,59 @@
                 <div class="example-row">
                   <label>{LANG.example_audio}</label>
                   <!-- BEGIN: current_example_audio -->
-                  <div class="current-audio-file" style="margin-bottom:5px;">
-                    <strong>{LANG.current_audio}:</strong> 
-                    <a href="{EXAMPLE.audio_url}" target="_blank">{EXAMPLE.audio_file}</a>
-                    <audio controls style="display:block; margin-top:5px; max-width:100%;">
-                      <source src="{EXAMPLE.audio_url}" type="audio/mpeg">
-                    </audio>
-                    <label style="margin-top:5px;">
-                      <input type="checkbox" name="ex_delete_audio[]" value="{EXAMPLE.id}"> {LANG.delete_audio}
-                    </label>
+                  <div class="audio-card audio-card-has-file">
+                    <div class="audio-card-header">
+                      <span class="audio-card-icon"><i class="fa fa-check-circle"></i></span>
+                      <div class="audio-card-content">
+                        <div class="audio-card-filename">{EXAMPLE.audio_file}</div>
+                        <div class="audio-player-compact">
+                          <audio controls>
+                            <source src="{EXAMPLE.audio_url}" type="audio/mpeg">
+                          </audio>
+                        </div>
+                        <div class="audio-card-delete-notice">{LANG.will_be_deleted}</div>
+                      </div>
+                    </div>
+                    <div class="audio-card-actions">
+                      <button type="button" class="btn-audio-action btn-audio-replace">
+                        <i class="fa fa-refresh"></i> {LANG.replace_audio_btn}
+                      </button>
+                      <button type="button" class="btn-audio-action btn-audio-remove">
+                        <i class="fa fa-trash"></i> {LANG.remove_audio_btn}
+                      </button>
+                      <button type="button" class="btn-audio-action btn-audio-undo">
+                        <i class="fa fa-undo"></i> {LANG.undo_remove_audio_btn}
+                      </button>
+                    </div>
+                    <div class="audio-file-input-wrapper">
+                      <input type="file" name="ex_audio[]" accept="audio/mpeg,audio/wav">
+                      <div class="audio-file-feedback"></div>
+                      <small class="audio-help-text-card">{LANG.audio_optional}</small>
+                    </div>
+                    <input type="hidden" name="ex_delete_audio[]" value="0">
                   </div>
                   <!-- END: current_example_audio -->
-                  <input type="file" name="ex_audio[]" accept="audio/mpeg,audio/wav">
-                  <small class="help-block">{LANG.audio_optional}</small>
+                  
+                  <!-- BEGIN: no_example_audio -->
+                  <div class="audio-card audio-card-empty">
+                    <div class="audio-card-header">
+                      <span class="audio-card-icon"><i class="fa fa-music"></i></span>
+                      <div class="audio-card-content">
+                        <div class="audio-card-filename">No audio file</div>
+                      </div>
+                    </div>
+                    <div class="audio-card-actions">
+                      <button type="button" class="btn-audio-action btn-audio-upload">
+                        <i class="fa fa-upload"></i> {LANG.upload_audio_btn}
+                      </button>
+                    </div>
+                    <div class="audio-file-input-wrapper show">
+                      <input type="file" name="ex_audio[]" accept="audio/mpeg,audio/wav">
+                      <div class="audio-file-feedback"></div>
+                      <small class="audio-help-text-card">{LANG.audio_optional}</small>
+                    </div>
+                  </div>
+                  <!-- END: no_example_audio -->
                 </div>
               </div>
               <!-- END: example -->

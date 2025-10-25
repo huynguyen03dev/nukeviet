@@ -53,11 +53,13 @@ $stmt->bindParam(':entry_id', $id, PDO::PARAM_INT);
 $stmt->execute();
 $existing_examples = $stmt->fetchAll();
 
-// Store original example audio files for potential deletion
+// Store original example audio files mapped by example ID for proper tracking
 $original_example_audios = [];
+$original_examples_map = [];
 foreach ($existing_examples as $ex) {
+    $original_examples_map[$ex['id']] = $ex;
     if (!empty($ex['audio_file'])) {
-        $original_example_audios[] = $ex['audio_file'];
+        $original_example_audios[$ex['id']] = $ex['audio_file'];
     }
 }
 
@@ -112,12 +114,22 @@ if ($nv_Request->isset_request('submit', 'post')) {
     $new_audio_filename = $original_audio; // Default to keeping existing audio
     $delete_audio = $nv_Request->get_int('delete_audio', 'post', 0);
     
+    // DEBUG: Log what we received
+    error_log('[Dictionary Debug] delete_audio value: ' . $delete_audio . ', original_audio: ' . $original_audio);
+    error_log('[Dictionary Debug] POST data: ' . print_r($_POST, true));
+    
     if ($delete_audio === 1 && !empty($original_audio)) {
         $audio_path = NV_ROOTDIR . '/uploads/' . $module_name . '/audio/' . $original_audio;
+        error_log('[Dictionary Debug] Attempting to delete: ' . $audio_path);
         if (!nv_deletefile($audio_path)) {
             trigger_error('[Dictionary Upload] Failed to delete audio: ' . basename($audio_path), E_USER_NOTICE);
+            error_log('[Dictionary Debug] Delete failed!');
+        } else {
+            error_log('[Dictionary Debug] Delete successful!');
         }
         $new_audio_filename = '';
+    } else {
+        error_log('[Dictionary Debug] Skipping deletion - delete_audio: ' . $delete_audio . ', original_audio: ' . var_export($original_audio, true));
     }
 
     // Task 2.3: Task 2.3: Validate and process new headword audio file (if uploaded)
@@ -263,18 +275,40 @@ if ($nv_Request->isset_request('submit', 'post')) {
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
 
-        // Task 2.5: Delete old examples and their audio files
-        foreach ($original_example_audios as $old_audio) {
-            $old_path = NV_ROOTDIR . '/uploads/' . $module_name . '/audio/' . $old_audio;
-            if (!nv_deletefile($old_path)) {
-                trigger_error('[Dictionary Upload] Failed to delete example audio: ' . basename($old_path), E_USER_NOTICE);
+        // Task 2.5: Handle example updates with proper audio file management
+        // Get submitted example IDs to track which examples are being kept
+        $submitted_example_ids = isset($_POST['ex_id']) && is_array($_POST['ex_id']) ? $_POST['ex_id'] : [];
+
+        // Delete examples that are not in the submitted list and their audio files
+        $keep_audio_files = [];
+        foreach ($existing_examples as $ex) {
+            if (!in_array($ex['id'], $submitted_example_ids)) {
+                // Example was removed - delete its audio file
+                if (!empty($ex['audio_file'])) {
+                    $old_path = NV_ROOTDIR . '/uploads/' . $module_name . '/audio/' . $ex['audio_file'];
+                    if (!nv_deletefile($old_path)) {
+                        trigger_error('[Dictionary Upload] Failed to delete removed example audio: ' . basename($old_path), E_USER_NOTICE);
+                    }
+                }
+            } else {
+                // Example is being kept - track its existing audio
+                if (!empty($ex['audio_file'])) {
+                    $keep_audio_files[$ex['id']] = $ex['audio_file'];
+                }
             }
         }
+
+        // Delete all old examples from database (we'll re-insert them)
         $db->query('DELETE FROM ' . NV_DICTIONARY_GLOBALTABLE . '_examples WHERE entry_id = ' . $id);
 
-        // Insert new examples (if provided) with audio handling
+        // Re-insert examples with proper audio handling
         $ex_sentences = isset($_POST['ex_sentence_en']) && is_array($_POST['ex_sentence_en']) ? $_POST['ex_sentence_en'] : [];
         $ex_trans = isset($_POST['ex_translation_vi']) && is_array($_POST['ex_translation_vi']) ? $_POST['ex_translation_vi'] : [];
+        $ex_ids = isset($_POST['ex_id']) && is_array($_POST['ex_id']) ? $_POST['ex_id'] : [];
+        $ex_delete_audio = isset($_POST['ex_delete_audio']) && is_array($_POST['ex_delete_audio']) ? $_POST['ex_delete_audio'] : [];
+        
+        // DEBUG: Log what we received for example audio deletion
+        error_log('[Dictionary Debug] ex_delete_audio array: ' . print_r($ex_delete_audio, true));
 
         if (!empty($ex_sentences)) {
             $sql_ex = 'INSERT INTO ' . NV_DICTIONARY_GLOBALTABLE . '_examples
@@ -291,9 +325,13 @@ if ($nv_Request->isset_request('submit', 'post')) {
                 }
                 $sort++;
                 
-                // Task 2.5: Handle example audio file move logic
+                // Determine which audio file to use for this example
                 $example_audio_filename = null;
+                $old_example_id = isset($ex_ids[$idx]) && !empty($ex_ids[$idx]) ? (int)$ex_ids[$idx] : 0;
+                
+                // Check if new audio was uploaded for this example
                 if (isset($example_audio_temp_files[$idx]) && $example_audio_temp_files[$idx] !== null) {
+                    // New audio uploaded - use it and delete old one if exists
                     $targetDir = NV_ROOTDIR . '/uploads/' . $module_name . '/audio';
                     if (!is_dir($targetDir)) {
                         if (!is_dir(NV_ROOTDIR . '/uploads/' . $module_name)) {
@@ -307,16 +345,51 @@ if ($nv_Request->isset_request('submit', 'post')) {
                     $final_path = $targetDir . '/' . $final_filename;
                     
                     if (rename($example_audio_temp_files[$idx], $final_path)) {
-                        // File moved successfully
+                        // New audio file moved successfully
                         $example_audio_filename = $final_filename;
+                        
+                        // Delete old audio file if it exists
+                        if ($old_example_id > 0 && isset($keep_audio_files[$old_example_id])) {
+                            $old_path = NV_ROOTDIR . '/uploads/' . $module_name . '/audio/' . $keep_audio_files[$old_example_id];
+                            if (!nv_deletefile($old_path)) {
+                                trigger_error('[Dictionary Upload] Failed to delete old example audio: ' . basename($old_path), E_USER_NOTICE);
+                            }
+                            unset($keep_audio_files[$old_example_id]);
+                        }
                     } else {
-                        // File move failed - log but continue with NULL
+                        // File move failed - log error but try to keep existing audio
                         trigger_error('[Dictionary Upload] Failed to move example audio from ' . basename($example_audio_temp_files[$idx]) . ' to final location', E_USER_WARNING);
                         nv_deletefile($example_audio_temp_files[$idx]);
-                        $example_audio_filename = null;
+                        
+                        // Fall back to keeping old audio if exists
+                        if ($old_example_id > 0 && isset($keep_audio_files[$old_example_id])) {
+                            $example_audio_filename = $keep_audio_files[$old_example_id];
+                        }
+                    }
+                } else {
+                    // No new audio uploaded - check if user wants to delete existing audio
+                    $delete_this_audio = isset($ex_delete_audio[$idx]) && (int)$ex_delete_audio[$idx] === 1;
+                    
+                    error_log('[Dictionary Debug] Example idx=' . $idx . ', delete_audio=' . (int)($ex_delete_audio[$idx] ?? 0) . ', should_delete=' . ($delete_this_audio ? 'YES' : 'NO'));
+                    
+                    if ($delete_this_audio && $old_example_id > 0 && isset($keep_audio_files[$old_example_id])) {
+                        // User clicked "Remove" - delete the audio file
+                        $old_path = NV_ROOTDIR . '/uploads/' . $module_name . '/audio/' . $keep_audio_files[$old_example_id];
+                        error_log('[Dictionary Debug] Deleting example audio: ' . $old_path);
+                        if (!nv_deletefile($old_path)) {
+                            trigger_error('[Dictionary Upload] Failed to delete example audio: ' . basename($old_path), E_USER_NOTICE);
+                        }
+                        unset($keep_audio_files[$old_example_id]);
+                        $example_audio_filename = null; // No audio for this example
+                    } elseif ($old_example_id > 0 && isset($keep_audio_files[$old_example_id])) {
+                        // Preserve existing audio
+                        $example_audio_filename = $keep_audio_files[$old_example_id];
+                        // Remove from tracking so it's not deleted as orphaned
+                        unset($keep_audio_files[$old_example_id]);
                     }
                 }
                 
+                // Insert example with appropriate audio file
                 $stmt_ex->bindParam(':entry_id', $id, PDO::PARAM_INT);
                 $stmt_ex->bindParam(':sentence_en', $sentence, PDO::PARAM_STR);
                 $stmt_ex->bindParam(':translation_vi', $translation, PDO::PARAM_STR);
@@ -328,6 +401,14 @@ if ($nv_Request->isset_request('submit', 'post')) {
                 $stmt_ex->bindParam(':sort', $sort, PDO::PARAM_INT);
                 $stmt_ex->bindParam(':created_at', $updated_at, PDO::PARAM_INT);
                 $stmt_ex->execute();
+            }
+            
+            // Clean up any orphaned audio files (examples that were removed but had audio)
+            foreach ($keep_audio_files as $unused_audio) {
+                $old_path = NV_ROOTDIR . '/uploads/' . $module_name . '/audio/' . $unused_audio;
+                if (!nv_deletefile($old_path)) {
+                    trigger_error('[Dictionary Upload] Failed to delete orphaned audio file: ' . basename($old_path), E_USER_NOTICE);
+                }
             }
         }
 
@@ -403,6 +484,9 @@ if (!empty($data['audio_file'])) {
     $xtpl->assign('AUDIO_FILE', htmlspecialchars($data['audio_file'], ENT_QUOTES, 'UTF-8'));
     $xtpl->parse('main.current_audio');
     $xtpl->parse('main.delete_audio');
+} else {
+    // Parse no_audio block when no audio exists
+    $xtpl->parse('main.no_audio');
 }
 
 // Render existing examples
@@ -418,6 +502,8 @@ if (!empty($existing_examples)) {
         ]);
         if (!empty($example['audio_file'])) {
             $xtpl->parse('main.example.current_example_audio');
+        } else {
+            $xtpl->parse('main.example.no_example_audio');
         }
         $xtpl->parse('main.example');
     }
