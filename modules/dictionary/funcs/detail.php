@@ -9,6 +9,22 @@
  * @see https://github.com/nukeviet The NukeViet CMS GitHub project
  */
 
+/**
+ * Dictionary Detail Page
+ * 
+ * Standalone word detail page accessible via:
+ * - URL: index.php?{NV_LANG_VARIABLE}={NV_LANG_DATA}&{NV_NAME_VARIABLE}=dictionary&op=detail&word={slug}
+ * - Navigation: Users can navigate from the main search page via autocomplete suggestions
+ * 
+ * Features:
+ * - Displays word details: headword, phonetic, part of speech, meaning, notes, examples
+ * - Audio playback for headword and examples (if available)
+ * - Error handling: Shows appropriate message if word not found with link back to search
+ * - Back button: Returns to main dictionary search page
+ * 
+ * Template: themes/default/modules/dictionary/detail.tpl
+ */
+
 if (!defined('NV_IS_MOD_DICTIONARY')) {
     exit('Stop!!!');
 }

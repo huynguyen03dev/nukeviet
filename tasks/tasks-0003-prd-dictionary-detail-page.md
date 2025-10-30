@@ -24,12 +24,12 @@
   - [x] 3.1 Update `themes/default/js/dictionary.js` suggestion click handler to redirect to `index.php?...&op=detail&word=<slug>`.
   - [x] 3.2 Ensure the loading spinner and hidden panels still behave correctly after navigation change.
   - [x] 3.3 Remove or hide the inline word-detail panel when the standalone page is available.
-- [ ] 4.0 Add navigation and error handling for detail routing
+- [x] 4.0 Add navigation and error handling for detail routing
   - [x] 4.1 Show `{LANG.no_results}` messaging with a link back to the main dictionary page when entry lookup fails.
   - [x] 4.2 Provide breadcrumb or back button in `detail.tpl` pointing to main search operation.
   - [x] 4.3 Clear cache or update caches if the module caches entry data.
 - [ ] 5.0 Validate feature behavior, localization, and documentation
-  - [ ] 5.1 Add new language keys to `modules/dictionary/language/en.php` and `vi.php` (e.g., back button text, error messages).
+  - [x] 5.1 Add new language keys to `modules/dictionary/language/en.php` and `vi.php` (e.g., back button text, error messages).
   - [ ] 5.2 Manually test direct URL access, search-to-detail flow, and error states in browser.
-  - [ ] 5.3 Update any relevant README or module notes describing the new detail page flow.
+  - [x] 5.3 Update any relevant README or module notes describing the new detail page flow.
 
