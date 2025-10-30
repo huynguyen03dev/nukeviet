@@ -10,12 +10,12 @@
                        placeholder="{LANG.type_to_search}"
                        autocomplete="off">
                 <i class="fa fa-search dictionary-search-icon"></i>
-                <span id="search-loading" class="dictionary-search-loading" style="display:none;">
+                <span id="search-loading" class="dictionary-search-loading dictionary-hidden">
                     <i class="fa fa-spinner fa-spin"></i>
                 </span>
                 
                 <!-- Autocomplete Dropdown -->
-                <div id="dictionary-autocomplete" class="dictionary-autocomplete" style="display:none;">
+                <div id="dictionary-autocomplete" class="dictionary-autocomplete dictionary-hidden">
                     <ul class="list-group" id="autocomplete-results"></ul>
                 </div>
             </div>
@@ -30,7 +30,7 @@
     </div>
 
     <!-- Word Details Panel (Hidden by default, replaces intro when word selected) -->
-    <div id="word-details-panel" class="panel panel-primary" style="display:none;">
+    <div id="word-details-panel" class="panel panel-primary dictionary-hidden">
         <div class="panel-heading">
             <h3 class="panel-title">
                 <span id="word-headword"></span>
@@ -40,10 +40,10 @@
         </div>
         <div class="panel-body">
             <!-- Hidden audio element for headword -->
-            <audio id="headword-audio" preload="none" style="display:none;"></audio>
+            <audio id="headword-audio" preload="none" class="dictionary-hidden"></audio>
             
             <!-- Phonetic -->
-            <div id="word-phonetic-container" style="display:none;">
+            <div id="word-phonetic-container" class="dictionary-hidden">
                 <p class="dictionary-phonetic">
                     <em id="word-phonetic"></em>
                 </p>
@@ -56,13 +56,13 @@
             </div>
 
             <!-- Notes -->
-            <div id="word-notes-container" class="dictionary-notes" style="display:none;">
+            <div id="word-notes-container" class="dictionary-notes dictionary-hidden">
                 <h4>{LANG.notes}</h4>
                 <p id="word-notes"></p>
             </div>
 
             <!-- Examples -->
-            <div id="word-examples-container" class="dictionary-examples" style="display:none;">
+            <div id="word-examples-container" class="dictionary-examples dictionary-hidden">
                 <h4>{LANG.examples}</h4>
                 <div id="word-examples-list"></div>
             </div>
@@ -70,15 +70,9 @@
     </div>
 </div>
 
-<script type="text/javascript">
-var DICTIONARY_CONFIG = {
-    moduleUrl: '{NV_BASE_SITEURL}index.php?{NV_LANG_VARIABLE}={NV_LANG_DATA}&{NV_NAME_VARIABLE}={MODULE_NAME}',
-    lang: {
-        noResults: '{LANG.no_results}',
-        loading: '{LANG.loading}',
-        selectWord: '{LANG.select_word}'
-    }
-};
-</script>
+<input type="hidden" id="dictionary-config-module-url" value="{NV_BASE_SITEURL}index.php?{NV_LANG_VARIABLE}={NV_LANG_DATA}&{NV_NAME_VARIABLE}={MODULE_NAME}">
+<input type="hidden" id="dictionary-config-lang-no-results" value="{LANG.no_results}">
+<input type="hidden" id="dictionary-config-lang-loading" value="{LANG.loading}">
+<input type="hidden" id="dictionary-config-lang-select-word" value="{LANG.select_word}">
 <!-- END: main -->
 

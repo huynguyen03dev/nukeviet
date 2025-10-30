@@ -16,7 +16,7 @@
     <!-- Errors -->
     <!-- BEGIN: errors -->
     <div class="alert alert-danger">
-      <ul style="margin:0; padding-left:18px;">
+      <ul>
         <!-- BEGIN: loop -->
         <li>{ERROR}</li>
         <!-- END: loop -->
@@ -101,12 +101,12 @@
         <label class="col-sm-3 control-label">{LANG.examples}</label>
         <div class="col-sm-9">
           <div id="examples-wrapper">
-            <div id="examples-container"></div>
             <div class="examples-add-button-wrapper">
               <button type="button" class="btn btn-success btn-sm" id="btn-add-example">
                 <i class="fa fa-plus"></i> {LANG.add_example}
               </button>
             </div>
+            <div id="examples-container"></div>
           </div>
         </div>
       </div>

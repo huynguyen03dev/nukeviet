@@ -16,7 +16,7 @@
     <!-- Errors -->
     <!-- BEGIN: errors -->
     <div class="alert alert-danger">
-      <ul style="margin:0; padding-left:18px;">
+      <ul>
         <!-- BEGIN: loop -->
         <li>{ERROR}</li>
         <!-- END: loop -->

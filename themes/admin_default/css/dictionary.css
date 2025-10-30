@@ -555,3 +555,34 @@ input[type="checkbox"][name="ex_delete_audio[]"] {
   font-size: 11px;
 }
 
+/* Error list styling */
+.alert-danger ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+/* Table column widths */
+.table-responsive .table col:nth-child(1) {
+  width: 5%;
+}
+
+.table-responsive .table col:nth-child(2) {
+  width: 25%;
+}
+
+.table-responsive .table col:nth-child(3) {
+  width: 15%;
+}
+
+.table-responsive .table col:nth-child(4) {
+  width: 25%;
+}
+
+.table-responsive .table col:nth-child(5) {
+  width: 15%;
+}
+
+.table-responsive .table col:nth-child(6) {
+  width: 15%;
+}
+

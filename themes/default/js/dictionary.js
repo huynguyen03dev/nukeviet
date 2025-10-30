@@ -29,7 +29,25 @@
      * Get configuration (lazy load to avoid timing issues)
      */
     function nv_dictionary_get_config() {
-        return window.DICTIONARY_CONFIG || {};
+        // Try to get from window first (backward compatibility)
+        if (window.DICTIONARY_CONFIG) {
+            return window.DICTIONARY_CONFIG;
+        }
+        
+        // Get from hidden inputs (preferred method)
+        var moduleUrl = $('#dictionary-config-module-url').val();
+        if (!moduleUrl) {
+            return {};
+        }
+        
+        return {
+            moduleUrl: moduleUrl,
+            lang: {
+                noResults: $('#dictionary-config-lang-no-results').val() || 'No results found',
+                loading: $('#dictionary-config-lang-loading').val() || 'Loading...',
+                selectWord: $('#dictionary-config-lang-select-word').val() || 'Select a word'
+            }
+        };
     }
     
     /**
@@ -117,21 +135,21 @@
      * Show loading indicator
      */
     function nv_dictionary_show_loading() {
-        $search_loading.show();
+        $search_loading.removeClass('dictionary-hidden').show();
     }
     
     /**
      * Hide loading indicator
      */
     function nv_dictionary_hide_loading() {
-        $search_loading.hide();
+        $search_loading.addClass('dictionary-hidden').hide();
     }
     
     /**
      * Hide autocomplete dropdown
      */
     function nv_dictionary_hide_autocomplete() {
-        $autocomplete_container.hide();
+        $autocomplete_container.addClass('dictionary-hidden').hide();
         selected_index = -1;
     }
     
@@ -163,7 +181,7 @@
         var config = nv_dictionary_get_config();
         var no_results_text = (config.lang && config.lang.noResults) || 'No results found';
         $autocomplete_results.html('<div class="no-results">' + no_results_text + '</div>');
-        $autocomplete_container.show();
+        $autocomplete_container.removeClass('dictionary-hidden').show();
     }
     
     /**
@@ -187,7 +205,7 @@
         });
         
         selected_index = -1;
-        $autocomplete_container.show();
+        $autocomplete_container.removeClass('dictionary-hidden').show();
     }
     
     /**
@@ -327,9 +345,9 @@
         
         if (data.phonetic) {
             $('#word-phonetic').text(data.phonetic);
-            $('#word-phonetic-container').show();
+            $('#word-phonetic-container').removeClass('dictionary-hidden').show();
         } else {
-            $('#word-phonetic-container').hide();
+            $('#word-phonetic-container').addClass('dictionary-hidden').hide();
         }
         
         var headword_audio_url = data.audio_url || '';
@@ -340,9 +358,9 @@
         
         if (data.notes && data.notes.trim() !== '') {
             $('#word-notes').html(nv_dictionary_nl2br(nv_dictionary_escape_html(data.notes)));
-            $('#word-notes-container').show();
+            $('#word-notes-container').removeClass('dictionary-hidden').show();
         } else {
-            $('#word-notes-container').hide();
+            $('#word-notes-container').addClass('dictionary-hidden').hide();
         }
         
         if (data.examples && data.examples.length > 0) {
@@ -373,12 +391,12 @@
                 nv_dictionary_setup_audio_icon($speaker, audio_url);
             });
             
-            $('#word-examples-container').show();
+            $('#word-examples-container').removeClass('dictionary-hidden').show();
         } else {
-            $('#word-examples-container').hide();
+            $('#word-examples-container').addClass('dictionary-hidden').hide();
         }
         
-        $word_details_panel.slideDown(300);
+        $word_details_panel.removeClass('dictionary-hidden').slideDown(300);
     }
     
     /**

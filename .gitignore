@@ -92,3 +92,5 @@ config.php
 !/data/tmp/index.html
 
 !/docs/config.php
+
+/uploads/dictionary/audio/

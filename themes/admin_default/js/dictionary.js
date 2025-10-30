@@ -21,6 +21,22 @@ function nv_delete_entry(id) {
 }
 
 $(function() {
+    // Handle success toast message from hidden input
+    var successMessage = $('#dictionary-success-message');
+    if (successMessage.length && successMessage.val()) {
+        nvToast(successMessage.val(), 'success');
+    }
+
+    // Handle delete entry button clicks via event delegation
+    $(document).on('click', '.btn-delete-entry', function(e) {
+        e.preventDefault();
+        var entryId = $(this).data('entry-id');
+        if (entryId) {
+            nv_delete_entry(entryId);
+        }
+        return false;
+    });
+
     // Fix search input cursor position
     var searchInput = $('input[name="search"]');
     if (searchInput.length && searchInput.val()) {

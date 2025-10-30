@@ -1,10 +1,6 @@
 <!-- BEGIN: main -->
 <!-- BEGIN: success_toast -->
-<script type="text/javascript">
-$(document).ready(function() {
-    nvToast('{SUCCESS_MESSAGE}', 'success');
-});
-</script>
+<input type="hidden" id="dictionary-success-message" value="{SUCCESS_MESSAGE}">
 <!-- END: success_toast -->
 
 <div class="well">
@@ -29,16 +25,22 @@ $(document).ready(function() {
     </form>
 </div>
 
+<div class="form-inline text-right">
+    <a href="{ADD_URL}" class="btn btn-primary">
+        <i class="fa fa-plus"></i> {LANG.add}
+    </a>
+</div>
+
 <div class="table-responsive">
     <table class="table table-striped table-bordered table-hover">
         <caption><em class="fa fa-file-text-o">&nbsp;</em>{LANG.list}</caption>
         <colgroup>
-            <col span="1" style="width: 5%;">
-            <col span="1" style="width: 25%;">
-            <col span="1" style="width: 15%;">
-            <col span="1" style="width: 25%;">
-            <col span="1" style="width: 15%;">
-            <col span="1" style="width: 15%;">
+            <col span="1">
+            <col span="1">
+            <col span="1">
+            <col span="1">
+            <col span="1">
+            <col span="1">
         </colgroup>
         <thead>
             <tr>
@@ -67,7 +69,7 @@ $(document).ready(function() {
                     <a href="{ROW.url_edit}" class="btn btn-default btn-xs" title="{LANG.edit}">
                         <i class="fa fa-edit"></i>
                     </a>
-                    <a href="javascript:void(0);" onclick="nv_delete_entry({ROW.id});" class="btn btn-danger btn-xs" title="{LANG.delete}">
+                    <a href="javascript:void(0);" class="btn btn-danger btn-xs btn-delete-entry" data-entry-id="{ROW.id}" title="{LANG.delete}">
                         <i class="fa fa-trash-o"></i>
                     </a>
                 </td>
@@ -82,12 +84,6 @@ $(document).ready(function() {
             <!-- END: empty -->
         </tbody>
     </table>
-</div>
-
-<div class="form-inline text-center">
-    <a href="{ADD_URL}" class="btn btn-primary">
-        <i class="fa fa-plus"></i> {LANG.add}
-    </a>
 </div>
 
 <!-- BEGIN: page -->

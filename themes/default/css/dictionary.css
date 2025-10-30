@@ -452,3 +452,8 @@
     #word-details-panel .panel-title .dictionary-speaker-icon { font-size: 18px; }
 }
 
+/* Hidden by default - use classes instead of inline styles */
+.dictionary-hidden {
+    display: none !important;
+}
+
