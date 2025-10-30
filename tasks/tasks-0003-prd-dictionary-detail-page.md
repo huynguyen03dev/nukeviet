@@ -16,14 +16,14 @@
   - [x] 1.2 Fetch dictionary entry by slug using `$nv_Request->get_title('word', 'get', '')` and existing data helpers.
   - [x] 1.3 Handle missing or unpublished entries by preparing an error state.
   - [x] 1.4 Assign language/global arrays and data to template, render via `nv_site_theme`.
-- [ ] 2.0 Create standalone word detail template and theming assets
+- [x] 2.0 Create standalone word detail template and theming assets
   - [x] 2.1 Create `themes/default/modules/dictionary/detail.tpl` reusing headword, phonetic, meaning, notes, examples components.
   - [x] 2.2 Expose `{LANG}`/`{GLANG}` blocks and add placeholders for empty sections (notes/examples) to keep UI consistent.
   - [x] 2.3 Adjust `themes/default/css/dictionary.css` if layout tweaks are needed for standalone view.
 - [ ] 3.0 Wire search autocomplete to navigate to detail page
-  - [ ] 3.1 Update `themes/default/js/dictionary.js` suggestion click handler to redirect to `index.php?...&op=detail&word=<slug>`.
-  - [ ] 3.2 Ensure the loading spinner and hidden panels still behave correctly after navigation change.
-  - [ ] 3.3 Remove or hide the inline word-detail panel when the standalone page is available.
+  - [x] 3.1 Update `themes/default/js/dictionary.js` suggestion click handler to redirect to `index.php?...&op=detail&word=<slug>`.
+  - [x] 3.2 Ensure the loading spinner and hidden panels still behave correctly after navigation change.
+  - [x] 3.3 Remove or hide the inline word-detail panel when the standalone page is available.
 - [ ] 4.0 Add navigation and error handling for detail routing
   - [ ] 4.1 Show `{LANG.no_results}` messaging with a link back to the main dictionary page when entry lookup fails.
   - [ ] 4.2 Provide breadcrumb or back button in `detail.tpl` pointing to main search operation.

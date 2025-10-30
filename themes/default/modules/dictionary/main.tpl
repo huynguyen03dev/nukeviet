@@ -30,6 +30,8 @@
     </div>
 
     <!-- Word Details Panel (Hidden by default, replaces intro when word selected) -->
+    <!-- Note: This panel is kept for potential future use but is not used in autocomplete flow -->
+    <!-- Autocomplete now navigates to standalone detail page instead of loading inline -->
     <div id="word-details-panel" class="panel panel-primary dictionary-hidden">
         <div class="panel-heading">
             <h3 class="panel-title">

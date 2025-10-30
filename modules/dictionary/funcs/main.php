@@ -32,7 +32,7 @@ if ($action == 'autocomplete') {
     
     $q = $db->dblikeescape($q);
     
-    $sql = 'SELECT id, headword, pos FROM ' . NV_DICTIONARY_GLOBALTABLE . '_entries 
+    $sql = 'SELECT id, headword, pos, slug FROM ' . NV_DICTIONARY_GLOBALTABLE . '_entries 
             WHERE headword LIKE :keyword 
             ORDER BY headword ASC 
             LIMIT 10';
@@ -46,7 +46,8 @@ if ($action == 'autocomplete') {
         $results[] = [
             'id' => (int) $row['id'],
             'headword' => $row['headword'],
-            'pos' => $row['pos']
+            'pos' => $row['pos'],
+            'slug' => $row['slug']
         ];
     }
     

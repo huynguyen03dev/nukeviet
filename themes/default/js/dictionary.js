@@ -197,7 +197,8 @@
         
         $.each(results, function(index, item) {
             var pos_html = item.pos ? '<span class="word-pos">' + nv_dictionary_escape_html(item.pos) + '</span>' : '';
-            var $item = $('<li class="list-group-item" data-id="' + item.id + '">' +
+            var $item = $('<li class="list-group-item" data-id="' + item.id + '" data-slug="' + 
+                nv_dictionary_escape_html(item.slug || '') + '">' +
                 '<span class="word-text">' + nv_dictionary_escape_html(item.headword) + '</span>' +
                 pos_html +
                 '</li>');
@@ -294,21 +295,48 @@
     }
     
     /**
+     * Navigate to word detail page
+     */
+    function nv_dictionary_navigate_to_detail(slug) {
+        if (!slug) {
+            console.error('Cannot navigate: slug is missing');
+            return;
+        }
+        
+        var config = nv_dictionary_get_config();
+        if (!config || !config.moduleUrl) {
+            console.error('Cannot navigate: module URL not found');
+            return;
+        }
+        
+        // Build detail page URL: moduleUrl + &op=detail&word={slug}
+        var detailUrl = config.moduleUrl + '&op=detail&word=' + encodeURIComponent(slug);
+        
+        window.location.href = detailUrl;
+    }
+    
+    /**
      * Select highlighted autocomplete item
      */
     function nv_dictionary_select_highlighted_item() {
         var $active_item = $autocomplete_results.find('.list-group-item.active');
         
         if ($active_item.length > 0) {
-            var word_id = $active_item.data('id');
-            var text = $active_item.find('.word-text').text();
-            $search_input.val(text);
-            nv_dictionary_load_word_details(word_id);
+            var slug = $active_item.data('slug');
+            if (slug) {
+                nv_dictionary_navigate_to_detail(slug);
+            } else {
+                console.error('Slug not found for selected item');
+            }
             nv_dictionary_hide_autocomplete();
         } else if (autocomplete_data.length > 0) {
             // If no item selected, use first result
-            $search_input.val(autocomplete_data[0].headword);
-            nv_dictionary_load_word_details(autocomplete_data[0].id);
+            var first_item_slug = autocomplete_data[0].slug;
+            if (first_item_slug) {
+                nv_dictionary_navigate_to_detail(first_item_slug);
+            } else {
+                console.error('Slug not found for first item');
+            }
             nv_dictionary_hide_autocomplete();
         }
     }
@@ -518,10 +546,12 @@
                 typing_timer = null;
             }
             
-            var word_id = $(this).data('id');
-            var text = $(this).find('.word-text').text();
-            $search_input.val(text);
-            nv_dictionary_load_word_details(word_id);
+            var slug = $(this).data('slug');
+            if (slug) {
+                nv_dictionary_navigate_to_detail(slug);
+            } else {
+                console.error('Slug not found for clicked item');
+            }
         });
         
         // Autocomplete item hover
