@@ -4,7 +4,7 @@
     <!-- Error state - entry not found -->
     <div class="panel panel-default">
         <div class="panel-body text-center">
-            <p class="lead">{DATA.error_message}</p>
+            <p class="lead">{LANG.no_results}</p>
             <a href="{MODULE_URL}" class="btn btn-primary">{LANG.back_to_search}</a>
         </div>
     </div>

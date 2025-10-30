@@ -29,6 +29,7 @@ if (empty($word_slug)) {
 }
 
 // Fetch entry by slug
+// Note: Dictionary module does not cache entry data, so no cache clearing is needed
 $sql = 'SELECT * FROM ' . NV_DICTIONARY_GLOBALTABLE . '_entries WHERE slug = :slug';
 $stmt = $db->prepare($sql);
 $stmt->bindParam(':slug', $word_slug, PDO::PARAM_STR);
