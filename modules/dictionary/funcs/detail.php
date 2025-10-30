@@ -41,18 +41,16 @@ if (empty($entry)) {
     $error_state = true;
     $error_message = $nv_Lang->getModule('no_results');
     
-    // Note: Template will display error state (to be implemented in task 4.1)
-    $data = [
-        'error' => true,
-        'error_message' => $error_message
-    ];
-    
     // Load template with error state
     $xtpl = new XTemplate('detail.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);
     $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
     $xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
-    $xtpl->assign('DATA', $data);
+    $xtpl->assign('DATA', [
+        'error' => true,
+        'error_message' => $error_message
+    ]);
     $xtpl->assign('MODULE_URL', NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name);
+    $xtpl->parse('main.error');
     $xtpl->parse('main');
     $contents = $xtpl->text('main');
     
@@ -113,6 +111,56 @@ $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
 $xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
 $xtpl->assign('DATA', $data);
 $xtpl->assign('MODULE_URL', NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name);
+
+// Parse conditional blocks for word details
+$xtpl->parse('main.word_details');
+
+// Parse audio blocks
+if (!empty($data['audio_url'])) {
+    $xtpl->parse('main.word_details.has_audio');
+} else {
+    $xtpl->parse('main.word_details.no_audio');
+}
+
+// Parse part of speech
+if (!empty($data['pos'])) {
+    $xtpl->parse('main.word_details.has_pos');
+}
+
+// Parse phonetic
+if (!empty($data['phonetic'])) {
+    $xtpl->parse('main.word_details.has_phonetic');
+}
+
+// Parse notes
+if (!empty($data['notes'])) {
+    $xtpl->parse('main.word_details.has_notes');
+} else {
+    $xtpl->parse('main.word_details.no_notes');
+}
+
+// Parse examples
+if (!empty($data['examples'])) {
+    $xtpl->parse('main.word_details.has_examples');
+    foreach ($data['examples'] as $example) {
+        $xtpl->assign('EXAMPLE', $example);
+        
+        if (!empty($example['audio_url'])) {
+            $xtpl->parse('main.word_details.has_examples.example_loop.example_has_audio');
+        } else {
+            $xtpl->parse('main.word_details.has_examples.example_loop.example_no_audio');
+        }
+        
+        if (!empty($example['translation_vi'])) {
+            $xtpl->parse('main.word_details.has_examples.example_loop.example_has_translation');
+        }
+        
+        $xtpl->parse('main.word_details.has_examples.example_loop');
+    }
+} else {
+    $xtpl->parse('main.word_details.no_examples');
+}
+
 $xtpl->parse('main');
 $contents = $xtpl->text('main');
 

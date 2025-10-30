@@ -87,9 +87,11 @@ $lang_module['type_to_search'] = 'Nhập từ để tìm kiếm...';
 $lang_module['no_results'] = 'Không tìm thấy từ nào phù hợp';
 $lang_module['loading'] = 'Đang tải...';
 $lang_module['select_word'] = 'Chọn một từ từ danh sách gợi ý';
+$lang_module['back_to_search'] = 'Quay lại Tìm kiếm';
 
 // Audio
 $lang_module['audio_pronunciation'] = 'Phát âm';
+$lang_module['play_pronunciation'] = 'Phát âm thanh';
 $lang_module['upload_audio'] = 'Tải lên âm thanh';
 $lang_module['audio_optional'] = 'Tùy chọn - MP3 hoặc WAV, tối đa 5MB';
 $lang_module['current_audio'] = 'Tệp âm thanh hiện tại';

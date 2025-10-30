@@ -86,9 +86,11 @@ $lang_module['type_to_search'] = 'Type a word to search...';
 $lang_module['no_results'] = 'No words found matching your search';
 $lang_module['loading'] = 'Loading...';
 $lang_module['select_word'] = 'Select a word from the suggestions';
+$lang_module['back_to_search'] = 'Back to Search';
 
 // Audio
 $lang_module['audio_pronunciation'] = 'Audio Pronunciation';
+$lang_module['play_pronunciation'] = 'Play pronunciation';
 $lang_module['upload_audio'] = 'Upload Audio';
 $lang_module['audio_optional'] = 'Optional - MP3 or WAV, max 5MB';
 $lang_module['current_audio'] = 'Current audio file';
