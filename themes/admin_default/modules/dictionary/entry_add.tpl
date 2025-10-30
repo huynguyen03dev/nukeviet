@@ -59,10 +59,26 @@
       </div>
 
       <div class="form-group">
-        <label class="col-sm-3 control-label">{LANG.audio_pronunciation}</label>
+        <label class="col-sm-3 control-label">{LANG.upload_audio}</label>
         <div class="col-sm-9">
-          <input type="file" name="audio" class="form-control" accept="audio/mp3,audio/mpeg,audio/wav">
-          <p class="help-block">{LANG.audio_optional}</p>
+          <div class="audio-card audio-card-empty">
+            <div class="audio-card-header">
+              <span class="audio-card-icon"><i class="fa fa-music"></i></span>
+              <div class="audio-card-content">
+                <div class="audio-card-filename">No audio file</div>
+              </div>
+            </div>
+            <div class="audio-card-actions">
+              <button type="button" class="btn-audio-action btn-audio-upload">
+                <i class="fa fa-upload"></i> {LANG.upload_audio_btn}
+              </button>
+            </div>
+            <div class="audio-file-input-wrapper show">
+              <input type="file" name="audio" accept="audio/mpeg,audio/wav">
+              <div class="audio-file-feedback"></div>
+              <small class="audio-help-text-card">{LANG.audio_optional}</small>
+            </div>
+          </div>
         </div>
       </div>
 
