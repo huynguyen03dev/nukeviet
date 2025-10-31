@@ -171,4 +171,4 @@ Use the sequential-thinking tool for complex tasks requiring careful analysis:
 - **Admin controller**: `admin/index.php`
 - **Frontend controller**: `index.php`
 
-See `.cursor/rules/nukeviet-frontend-rule.mdc` and `CLAUDE.md` for detailed frontend conventions and architecture.
+See `.cursor/rules/nukeviet-frontend-rule.mdc` for detailed frontend conventions and architecture.

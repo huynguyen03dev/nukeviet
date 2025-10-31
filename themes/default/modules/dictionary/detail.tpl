@@ -1,11 +1,32 @@
 <!-- BEGIN: main -->
 <div class="dictionary-main">
+    <!-- Search Section -->
+    <div class="dictionary-search-section">
+        <div class="dictionary-search-wrapper">
+            <div class="dictionary-search-container">
+                <input type="text" 
+                       id="dictionary-search-input" 
+                       class="dictionary-search-input" 
+                       placeholder="{LANG.type_to_search}"
+                       autocomplete="off">
+                <i class="fa fa-search dictionary-search-icon"></i>
+                <span id="search-loading" class="dictionary-search-loading dictionary-hidden">
+                    <i class="fa fa-spinner fa-spin"></i>
+                </span>
+                
+                <!-- Autocomplete Dropdown -->
+                <div id="dictionary-autocomplete" class="dictionary-autocomplete dictionary-hidden">
+                    <ul class="list-group" id="autocomplete-results"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- BEGIN: error -->
     <!-- Error state - entry not found -->
     <div class="panel panel-default">
         <div class="panel-body text-center">
             <p class="lead">{LANG.no_results}</p>
-            <a href="{MODULE_URL}" class="btn btn-primary">{LANG.back_to_search}</a>
         </div>
     </div>
     <!-- END: error -->
@@ -94,16 +115,12 @@
             </div>
             <!-- END: has_examples -->
             <!-- BEGIN: no_examples -->
-            <!-- Examples section placeholder - kept for consistent spacing -->
+            <div class="word-examples-container dictionary-examples">
+                <h4>{LANG.examples}</h4>
+                <p class="lead"><span style="font-style: italic; color: #7f8c8d; margin: 10px 0;">No examples available for this word</span></p>
+            </div>
             <!-- END: no_examples -->
         </div>
-    </div>
-
-    <!-- Back to Search Button -->
-    <div class="text-center" style="margin-top: 20px;">
-        <a href="{MODULE_URL}" class="btn btn-default">
-            <i class="fa fa-arrow-left"></i> {LANG.back_to_search}
-        </a>
     </div>
     <!-- END: word_details -->
 </div>
@@ -162,5 +179,10 @@
     });
 })(jQuery);
 </script>
+
+<input type="hidden" id="dictionary-config-module-url" value="{NV_BASE_SITEURL}index.php?{NV_LANG_VARIABLE}={NV_LANG_DATA}&{NV_NAME_VARIABLE}={MODULE_NAME}">
+<input type="hidden" id="dictionary-config-lang-no-results" value="{LANG.no_results}">
+<input type="hidden" id="dictionary-config-lang-loading" value="{LANG.loading}">
+<input type="hidden" id="dictionary-config-lang-select-word" value="{LANG.select_word}">
 <!-- END: main -->
 

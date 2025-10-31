@@ -15,7 +15,7 @@ if (!defined('NV_ADMIN') or !defined('NV_MAINFILE')) {
 
 $module_version = [
     'name' => 'Dictionary',
-    'modfuncs' => 'main',
+    'modfuncs' => 'main, detail',
     'is_sysmod' => 0,
     'virtual' => 1,
     'version' => '5.0.00',

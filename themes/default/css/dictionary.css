@@ -473,3 +473,30 @@
     margin-bottom: 20px;
 }
 
+
+/* POS Badge in panel title - make it visible on blue background */
+.dictionary-main .panel-primary .panel-title .badge {
+    background-color: #ffffff;
+    color: #3498db;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    margin-left: 8px;
+    border-radius: 3px;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+/* Word Examples Container */
+.word-examples-container {
+    margin-top: 25px;
+}
+
+.word-examples-container.dictionary-examples {
+    margin-bottom: 25px;
+}
+
+.word-examples-list {
+    margin-top: 10px;
+    min-height: 20px;
+}

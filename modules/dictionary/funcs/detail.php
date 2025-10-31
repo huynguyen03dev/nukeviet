@@ -67,6 +67,11 @@ if (empty($entry)) {
         'error_message' => $error_message
     ]);
     $xtpl->assign('MODULE_URL', NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name);
+    $xtpl->assign('MODULE_NAME', $module_name);
+    $xtpl->assign('NV_BASE_SITEURL', NV_BASE_SITEURL);
+    $xtpl->assign('NV_LANG_VARIABLE', NV_LANG_VARIABLE);
+    $xtpl->assign('NV_LANG_DATA', NV_LANG_DATA);
+    $xtpl->assign('NV_NAME_VARIABLE', NV_NAME_VARIABLE);
     $xtpl->parse('main.error');
     $xtpl->parse('main');
     $contents = $xtpl->text('main');
@@ -128,9 +133,14 @@ $xtpl->assign('LANG', \NukeViet\Core\Language::$lang_module);
 $xtpl->assign('GLANG', \NukeViet\Core\Language::$lang_global);
 $xtpl->assign('DATA', $data);
 $xtpl->assign('MODULE_URL', NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name);
+$xtpl->assign('MODULE_NAME', $module_name);
+$xtpl->assign('NV_BASE_SITEURL', NV_BASE_SITEURL);
+$xtpl->assign('NV_LANG_VARIABLE', NV_LANG_VARIABLE);
+$xtpl->assign('NV_LANG_DATA', NV_LANG_DATA);
+$xtpl->assign('NV_NAME_VARIABLE', NV_NAME_VARIABLE);
 
 // Parse conditional blocks for word details
-$xtpl->parse('main.word_details');
+// IMPORTANT: Parse child blocks BEFORE parsing parent block
 
 // Parse audio blocks
 if (!empty($data['audio_url'])) {
@@ -158,7 +168,6 @@ if (!empty($data['notes'])) {
 
 // Parse examples
 if (!empty($data['examples'])) {
-    $xtpl->parse('main.word_details.has_examples');
     foreach ($data['examples'] as $example) {
         $xtpl->assign('EXAMPLE', $example);
         
@@ -174,9 +183,13 @@ if (!empty($data['examples'])) {
         
         $xtpl->parse('main.word_details.has_examples.example_loop');
     }
+    $xtpl->parse('main.word_details.has_examples');
 } else {
     $xtpl->parse('main.word_details.no_examples');
 }
+
+// Now parse parent block after all child blocks are parsed
+$xtpl->parse('main.word_details');
 
 $xtpl->parse('main');
 $contents = $xtpl->text('main');
