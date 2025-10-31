@@ -8,11 +8,15 @@
 
 ## Build/Test Commands
 - **Start/Stop XAMPP**: `sudo /opt/lampp/lampp start|stop`
+- **Restart Apache**: `sudo /opt/lampp/lampp restartapache`
 - **Database Access**: `/opt/lampp/bin/mysql -u root -p`
 - **Fix Permissions**: `bash nukeviet_fix_permissions.sh`
 - **View PHP Errors**: `tail -f /opt/lampp/logs/php_error_log`
-- **Clear Cache**: Delete contents of `data/cache/` or use admin cache management
+- **View Apache Errors**: `tail -f /opt/lampp/logs/error_log`
+- **Clear Cache**: Delete contents of `data/cache/*` (keep index.html) or use admin panel
+- **Admin Login**: http://localhost/nukeviet/admin/ (credentials in `docs/change.txt`)
 - **No formal test suite**: Manual testing via browser (Frontend: `http://localhost/nukeviet/`, Admin: `http://localhost/nukeviet/admin/`)
+- **No linting/typecheck**: Framework does not use modern PHP linters; follow code conventions strictly
 
 ## Code Style
 
@@ -40,6 +44,7 @@
 - **Table naming**: `NV_PREFIXLANG . '_' . $module_data . '_<table>'` (e.g., `nv4_vi_dictionary_entries`)
 - **Input handling**: Use `$nv_Request->get_int()`, `get_string()`, `get_title()` - never raw `$_GET/$_POST/$_COOKIE`
 - **CSRF protection**: Validate with `$nv_Request->get_title('checkss', 'post', '')` === `md5(NV_CHECK_SESSION)`
+- **Prepared statements required**: Always use parameterized queries with `$stmt->bindParam()` to prevent SQL injection
 
 ### Templating (XTemplate)
 - **Pattern**: `$xtpl = new XTemplate('file.tpl', NV_ROOTDIR . '/themes/' . $global_config['module_theme'] . '/modules/' . $module_file);`
@@ -56,7 +61,9 @@
 - **Never hardcode paths**: Use `$global_config['module_theme']` / `$global_config['admin_theme']`, never literal theme names
 - **Use framework functions**: `change_alias()` (slugs), `nv_redirect_location()` (redirects), `nv_jsonOutput()` (AJAX)
 - **Autoloading**: PSR-4 via Composer - `NukeViet\` namespace maps to `includes/vendor/vinades/nukeviet/`
-- **Constants**: `NV_ROOTDIR`, `NV_LANG_DATA`, `NV_CURRENTTIME`, `NV_CHECK_SESSION`
+- **Constants**: `NV_ROOTDIR`, `NV_LANG_DATA`, `NV_CURRENTTIME`, `NV_CHECK_SESSION`, `NV_PREFIXLANG`
+- **Global objects**: `$db`, `$db_slave`, `$nv_Request`, `$nv_Lang`, `$global_config`, `$module_info` are auto-loaded
+- **IP handling**: Use constants `NV_CLIENT_IP`, `NV_REMOTE_ADDR`, `NV_FORWARD_IP` from `NukeViet\Core\Ips`
 
 ## When to Use Sequential Thinking
 Use the sequential-thinking tool for complex tasks requiring careful analysis:
