@@ -72,14 +72,35 @@ if ($nv_Request->isset_request('submit', 'post')) {
     );
     $upload->setLanguage(\NukeViet\Core\Language::$lang_global);
 
-    // Task 1.2: Validate and process headword audio file (if uploaded)
+    // Task 2.1-2.2: Validate and process headword audio file (if uploaded)
     $headword_audio_temp_file = null;
     if (isset($_FILES['audio']) && $_FILES['audio']['error'] !== UPLOAD_ERR_NO_FILE) {
         $upload_info = $upload->save_file($_FILES['audio'], NV_ROOTDIR . '/' . NV_TEMP_DIR, false);
+        
+        error_log('[Dictionary Upload Debug] Headword audio upload_info: ' . print_r($upload_info, true));
+        
         if (empty($upload_info['error'])) {
-            $headword_audio_temp_file = $upload_info['name'];
+            // Task 2.1: Check if upload_info['name'] is not null/empty
+            if (empty($upload_info['name'])) {
+                $errors[] = $nv_Lang->getModule('error_audio_upload_failed');
+                error_log('[Dictionary Upload Debug] upload_info[\'name\'] is empty or null');
+            } else {
+                $headword_audio_temp_file = $upload_info['name'];
+                
+                error_log('[Dictionary Upload Debug] Temp file path stored: ' . $headword_audio_temp_file);
+                
+                // Task 2.2: Verify file exists immediately after setting path
+                if (!file_exists($headword_audio_temp_file)) {
+                    $errors[] = $nv_Lang->getModule('error_audio_file_not_found');
+                    error_log('[Dictionary Upload Debug] Temp file does NOT exist at: ' . $headword_audio_temp_file);
+                    $headword_audio_temp_file = null; // Reset to prevent further processing
+                } else {
+                    error_log('[Dictionary Upload Debug] Temp file exists: YES');
+                }
+            }
         } else {
             $errors[] = $upload_info['error'];
+            error_log('[Dictionary Upload Debug] Headword audio upload failed: ' . $upload_info['error']);
         }
         nv_deletefile($_FILES['audio']['tmp_name']);
     }
@@ -103,10 +124,16 @@ if ($nv_Request->isset_request('submit', 'post')) {
             ];
 
             $upload_info = $upload->save_file($single_file, NV_ROOTDIR . '/' . NV_TEMP_DIR, false);
+            
+            error_log('[Dictionary Upload Debug] Example #' . ($idx + 1) . ' upload_info: ' . print_r($upload_info, true));
+            
             if (empty($upload_info['error'])) {
                 $example_audio_temp_files[$idx] = $upload_info['name'];
+                error_log('[Dictionary Upload Debug] Example #' . ($idx + 1) . ' temp file: ' . $example_audio_temp_files[$idx]);
+                error_log('[Dictionary Upload Debug] Example #' . ($idx + 1) . ' temp file exists: ' . (file_exists($example_audio_temp_files[$idx]) ? 'YES' : 'NO'));
             } else {
                 $errors[] = sprintf($nv_Lang->getModule('error_audio_upload_failed') . ' (Example #%d)', $idx + 1);
+                error_log('[Dictionary Upload Debug] Example #' . ($idx + 1) . ' upload failed: ' . $upload_info['error']);
             }
             if (isset($_FILES['ex_audio']['tmp_name'][$idx])) {
                 nv_deletefile($_FILES['ex_audio']['tmp_name'][$idx]);
@@ -173,7 +200,7 @@ if ($nv_Request->isset_request('submit', 'post')) {
 
         $entry_id = (int) $db->lastInsertId();
         
-        // Task 1.4: Handle headword audio file move logic after database INSERT
+        // Task 2.3-2.10: Handle headword audio file move logic after database INSERT
         if ($headword_audio_temp_file !== null) {
             $targetDir = NV_ROOTDIR . '/uploads/' . $module_name . '/audio';
             if (!is_dir($targetDir)) {
@@ -187,18 +214,78 @@ if ($nv_Request->isset_request('submit', 'post')) {
             $final_filename = $entry_id . '_' . nv_genpass(8) . '.' . $file_ext;
             $final_path = $targetDir . '/' . $final_filename;
             
-            if (rename($headword_audio_temp_file, $final_path)) {
-                // File moved successfully, update database with final filename
-                $sql_update = 'UPDATE ' . NV_DICTIONARY_GLOBALTABLE . '_entries SET audio_file = :audio_file WHERE id = :id';
-                $stmt_update = $db->prepare($sql_update);
-                $stmt_update->bindParam(':audio_file', $final_filename, PDO::PARAM_STR);
-                $stmt_update->bindParam(':id', $entry_id, PDO::PARAM_INT);
-                $stmt_update->execute();
+            error_log('[Dictionary Upload Debug] Before rename() - Source: ' . $headword_audio_temp_file);
+            error_log('[Dictionary Upload Debug] Before rename() - Destination: ' . $final_path);
+            
+            // Task 2.3: Check if source file exists before attempting rename
+            if (!file_exists($headword_audio_temp_file)) {
+                $errors[] = $nv_Lang->getModule('error_audio_file_not_found');
+                error_log('[Dictionary Upload Debug] Source file missing before rename');
             } else {
-                // File move failed - log error but don't block operation
-                trigger_error('[Dictionary Upload] Failed to move headword audio from ' . basename($headword_audio_temp_file) . ' to final location', E_USER_WARNING);
+                error_log('[Dictionary Upload Debug] Source exists: YES');
+                
+                // Task 2.4: Check directory writability
+                if (!is_writable($targetDir)) {
+                    $errors[] = $nv_Lang->getModule('error_audio_directory_not_writable');
+                    error_log('[Dictionary Upload Debug] Destination directory NOT writable: ' . $targetDir);
+                } else {
+                    error_log('[Dictionary Upload Debug] Destination dir writable: YES');
+                    
+                    // Task 2.5: Comprehensive error handling for rename()
+                    $rename_result = rename($headword_audio_temp_file, $final_path);
+                    error_log('[Dictionary Upload Debug] rename() result: ' . ($rename_result ? 'TRUE' : 'FALSE'));
+                    
+                    if (!$rename_result) {
+                        $last_error = error_get_last();
+                        $errors[] = $nv_Lang->getModule('error_audio_upload_failed');
+                        error_log('[Dictionary Upload Debug] rename() failed. Last error: ' . print_r($last_error, true));
+                    } else {
+                        // Task 2.6: Verify file exists at destination after rename
+                        if (file_exists($final_path)) {
+                            error_log('[Dictionary Upload Debug] Destination file exists: YES');
+                            
+                            // Task 2.7: Only update database if file move succeeded AND file exists
+                            $sql_update = 'UPDATE ' . NV_DICTIONARY_GLOBALTABLE . '_entries SET audio_file = :audio_file WHERE id = :id';
+                            $stmt_update = $db->prepare($sql_update);
+                            $stmt_update->bindParam(':audio_file', $final_filename, PDO::PARAM_STR);
+                            $stmt_update->bindParam(':id', $entry_id, PDO::PARAM_INT);
+                            $stmt_update->execute();
+                        } else {
+                            $errors[] = $nv_Lang->getModule('error_audio_upload_failed');
+                            error_log('[Dictionary Upload Debug] Destination file does NOT exist after rename');
+                        }
+                    }
+                    
+                    // Task 2.8: Keep temp file for debugging on error (don't delete)
+                    if (!empty($errors)) {
+                        error_log('[Dictionary Upload Debug] Keeping temp file for debugging: ' . $headword_audio_temp_file);
+                    }
+                }
+            }
+        }
+
+        // Task 2.9: Check if errors occurred during audio processing
+        if (!empty($errors)) {
+            // Store errors in session and redirect back to form (PRG pattern)
+            $_SESSION['dictionary_form_errors'] = $errors;
+            $_SESSION['dictionary_form_data'] = $data;
+            
+            // Clean up temp files on error
+            if ($headword_audio_temp_file !== null && file_exists($headword_audio_temp_file)) {
                 nv_deletefile($headword_audio_temp_file);
             }
+            foreach ($example_audio_temp_files as $temp_file) {
+                if ($temp_file !== null && file_exists($temp_file)) {
+                    nv_deletefile($temp_file);
+                }
+            }
+            
+            nv_redirect_location(
+                NV_BASE_ADMINURL . 'index.php?'
+                . NV_LANG_VARIABLE . '=' . NV_LANG_DATA
+                . '&' . NV_NAME_VARIABLE . '=' . $module_name
+                . '&' . NV_OP_VARIABLE . '=entry_add'
+            );
         }
 
         // Step 2: Insert examples (if provided)
@@ -220,7 +307,7 @@ if ($nv_Request->isset_request('submit', 'post')) {
                 }
                 $sort++;
                 
-                // Task 1.5: Handle example audio file move logic
+                // Task 3.0: Handle example audio file move logic with proper error handling
                 $example_audio_filename = null;
                 if (isset($example_audio_temp_files[$idx]) && $example_audio_temp_files[$idx] !== null) {
                     $targetDir = NV_ROOTDIR . '/uploads/' . $module_name . '/audio';
@@ -235,14 +322,49 @@ if ($nv_Request->isset_request('submit', 'post')) {
                     $final_filename = $entry_id . '_ex_' . $sort . '_' . nv_genpass(8) . '.' . $file_ext;
                     $final_path = $targetDir . '/' . $final_filename;
                     
-                    if (rename($example_audio_temp_files[$idx], $final_path)) {
-                        // File moved successfully
-                        $example_audio_filename = $final_filename;
+                    error_log('[Dictionary Upload Debug] Example #' . ($idx + 1) . ' before rename() - Source: ' . $example_audio_temp_files[$idx]);
+                    error_log('[Dictionary Upload Debug] Example #' . ($idx + 1) . ' before rename() - Destination: ' . $final_path);
+                    
+                    // Task 3.1: Verify temp file exists before attempting rename
+                    if (!file_exists($example_audio_temp_files[$idx])) {
+                        $errors[] = sprintf($nv_Lang->getModule('error_example_audio_failed'), $idx + 1);
+                        error_log('[Dictionary Upload Debug] Example #' . ($idx + 1) . ' source file does NOT exist');
                     } else {
-                        // File move failed - log but set audio_file to NULL
-                        trigger_error('[Dictionary Upload] Failed to move example audio from ' . basename($example_audio_temp_files[$idx]) . ' to final location', E_USER_WARNING);
-                        nv_deletefile($example_audio_temp_files[$idx]);
-                        $example_audio_filename = null;
+                        error_log('[Dictionary Upload Debug] Example #' . ($idx + 1) . ' source exists: YES');
+                        
+                        // Task 3.2: Check directory writability before rename
+                        if (!is_writable($targetDir)) {
+                            $errors[] = sprintf($nv_Lang->getModule('error_example_audio_failed'), $idx + 1);
+                            error_log('[Dictionary Upload Debug] Example #' . ($idx + 1) . ' destination directory NOT writable: ' . $targetDir);
+                        } else {
+                            error_log('[Dictionary Upload Debug] Example #' . ($idx + 1) . ' destination dir writable: YES');
+                            
+                            // Task 3.3: Comprehensive error handling for rename()
+                            $rename_result = rename($example_audio_temp_files[$idx], $final_path);
+                            error_log('[Dictionary Upload Debug] Example #' . ($idx + 1) . ' rename() result: ' . ($rename_result ? 'TRUE' : 'FALSE'));
+                            
+                            if (!$rename_result) {
+                                // Task 3.3: Capture result and log error
+                                $last_error = error_get_last();
+                                $errors[] = sprintf($nv_Lang->getModule('error_example_audio_failed'), $idx + 1);
+                                error_log('[Dictionary Upload Debug] Example #' . ($idx + 1) . ' rename() failed. Last error: ' . print_r($last_error, true));
+                            } else {
+                                // Task 3.4: Verify destination file exists after rename
+                                if (file_exists($final_path)) {
+                                    error_log('[Dictionary Upload Debug] Example #' . ($idx + 1) . ' destination file exists: YES');
+                                    // Task 3.5: Track success - file moved successfully
+                                    $example_audio_filename = $final_filename;
+                                } else {
+                                    $errors[] = sprintf($nv_Lang->getModule('error_example_audio_failed'), $idx + 1);
+                                    error_log('[Dictionary Upload Debug] Example #' . ($idx + 1) . ' destination file does NOT exist after rename');
+                                }
+                            }
+                            
+                            // Task 3.6: Keep temp file for debugging on error (don't delete immediately)
+                            if ($example_audio_filename === null) {
+                                error_log('[Dictionary Upload Debug] Example #' . ($idx + 1) . ' keeping temp file for debugging: ' . $example_audio_temp_files[$idx]);
+                            }
+                        }
                     }
                 }
                 
@@ -260,9 +382,38 @@ if ($nv_Request->isset_request('submit', 'post')) {
             }
         }
 
+        // Task 3.6: Check if any errors occurred during example audio processing
+        if (!empty($errors)) {
+            // Store errors in session and redirect back to form (PRG pattern)
+            $_SESSION['dictionary_form_errors'] = $errors;
+            $_SESSION['dictionary_form_data'] = $data;
+            
+            // Task 3.8: Clean up ALL temp files on error (including examples)
+            if ($headword_audio_temp_file !== null && file_exists($headword_audio_temp_file)) {
+                nv_deletefile($headword_audio_temp_file);
+            }
+            foreach ($example_audio_temp_files as $temp_file) {
+                if ($temp_file !== null && file_exists($temp_file)) {
+                    nv_deletefile($temp_file);
+                }
+            }
+            
+            nv_redirect_location(
+                NV_BASE_ADMINURL . 'index.php?'
+                . NV_LANG_VARIABLE . '=' . NV_LANG_DATA
+                . '&' . NV_NAME_VARIABLE . '=' . $module_name
+                . '&' . NV_OP_VARIABLE . '=entry_add'
+            );
+        }
+
+        // Task 2.10 & 4.11: Only show success message if NO errors occurred
+        // Use different message if audio was uploaded
+        $has_audio = ($headword_audio_temp_file !== null && file_exists($final_path));
+        $success_key = $has_audio ? 'entry_added_success_with_audio' : 'entry_added_success';
+        
         // Store success message in session to show toast on next page
         $_SESSION['dictionary_success_message'] = sprintf(
-            $nv_Lang->getModule('entry_added_success'),
+            $nv_Lang->getModule($success_key),
             $data['headword']
         );
 
