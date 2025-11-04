@@ -58,7 +58,11 @@ $lang_module['success_add'] = 'Thêm từ thành công';
 $lang_module['success_edit'] = 'Cập nhật từ thành công';
 $lang_module['success_delete'] = 'Xóa từ thành công';
 $lang_module['entry_added_success'] = 'Từ "%s" đã được thêm thành công';
+// Task 4.9: Add Vietnamese success message with audio confirmation
+$lang_module['entry_added_success_with_audio'] = 'Từ "%s" đã được thêm thành công với phát âm.';
 $lang_module['entry_updated_success'] = 'Từ "%s" đã được cập nhật thành công';
+// Task 5.9: Add Vietnamese edit success message with audio confirmation
+$lang_module['entry_updated_success_with_audio'] = 'Từ "%s" đã được cập nhật thành công với phát âm.';
 $lang_module['entry_deleted_success'] = 'Từ "%s" đã được xóa thành công';
 $lang_module['errorsave'] = 'Đã xảy ra lỗi khi lưu dữ liệu';
 
@@ -116,4 +120,10 @@ $lang_module['error_audio_upload_failed'] = 'Tải lên tệp âm thanh thất b
 $lang_module['error_audio_move_failed'] = 'Tệp âm thanh đã tải lên nhưng không thể lưu vào vị trí cuối cùng.';
 $lang_module['error_audio_delete_failed'] = 'Không thể xóa tệp âm thanh cũ (tệp có thể bị thiếu).';
 $lang_module['error_audio_not_found'] = 'Không tìm thấy tệp âm thanh được yêu cầu.';
+// Task 4.6: Add Vietnamese translation for file not found error
+$lang_module['error_audio_file_not_found'] = 'Không tìm thấy tệp âm thanh sau khi tải lên. Vui lòng thử lại.';
+// Task 4.7: Add Vietnamese translation for directory not writable error
+$lang_module['error_audio_directory_not_writable'] = 'Thư mục tải lên không có quyền ghi. Vui lòng liên hệ quản trị viên.';
+// Task 4.10: Add Vietnamese example-specific error message
+$lang_module['error_example_audio_failed'] = 'Không thể lưu âm thanh cho ví dụ #%d.';
 $lang_module['download_audio'] = 'Tải xuống âm thanh';
