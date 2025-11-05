@@ -53,11 +53,6 @@
             </h3>
         </div>
         <div class="panel-body">
-            <!-- Hidden audio element for headword -->
-            <!-- BEGIN: has_audio -->
-            <audio id="headword-audio" preload="none" class="dictionary-hidden"></audio>
-            <!-- END: has_audio -->
-            
             <!-- Phonetic -->
             <!-- BEGIN: has_phonetic -->
             <div class="word-phonetic-container">

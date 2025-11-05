@@ -41,9 +41,6 @@
             </h3>
         </div>
         <div class="panel-body">
-            <!-- Hidden audio element for headword -->
-            <audio id="headword-audio" preload="none" class="dictionary-hidden"></audio>
-            
             <!-- Phonetic -->
             <div id="word-phonetic-container" class="dictionary-hidden">
                 <p class="dictionary-phonetic">
