@@ -115,4 +115,10 @@ $lang_module['error_audio_upload_failed'] = 'Failed to upload audio file. Please
 $lang_module['error_audio_move_failed'] = 'Audio file uploaded but could not be saved to final location.';
 $lang_module['error_audio_delete_failed'] = 'Could not delete old audio file (file may be missing).';
 $lang_module['error_audio_not_found'] = 'The requested audio file could not be found.';
+// Task 4.1-4.5 & 5.9: New error and success messages for audio upload fixes
+$lang_module['error_audio_file_not_found'] = 'Audio file could not be found after upload. Please try again.';
+$lang_module['error_audio_directory_not_writable'] = 'Audio upload directory is not writable. Please contact administrator.';
+$lang_module['entry_added_success_with_audio'] = 'Entry "%s" has been added successfully with audio pronunciation.';
+$lang_module['error_example_audio_failed'] = 'Failed to save audio for example #%d.';
+$lang_module['entry_updated_success_with_audio'] = 'Entry "%s" has been updated successfully with audio pronunciation.';
 $lang_module['download_audio'] = 'Download Audio';

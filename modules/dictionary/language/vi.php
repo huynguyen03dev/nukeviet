@@ -116,4 +116,10 @@ $lang_module['error_audio_upload_failed'] = 'Tải lên tệp âm thanh thất b
 $lang_module['error_audio_move_failed'] = 'Tệp âm thanh đã tải lên nhưng không thể lưu vào vị trí cuối cùng.';
 $lang_module['error_audio_delete_failed'] = 'Không thể xóa tệp âm thanh cũ (tệp có thể bị thiếu).';
 $lang_module['error_audio_not_found'] = 'Không tìm thấy tệp âm thanh được yêu cầu.';
+// Task 4.6-4.10 & 5.9: New error and success messages for audio upload fixes (Vietnamese translations)
+$lang_module['error_audio_file_not_found'] = 'Không tìm thấy tệp âm thanh sau khi tải lên. Vui lòng thử lại.';
+$lang_module['error_audio_directory_not_writable'] = 'Thư mục tải lên không có quyền ghi. Vui lòng liên hệ quản trị viên.';
+$lang_module['entry_added_success_with_audio'] = 'Từ "%s" đã được thêm thành công với phát âm.';
+$lang_module['error_example_audio_failed'] = 'Không thể lưu âm thanh cho ví dụ #%d.';
+$lang_module['entry_updated_success_with_audio'] = 'Từ "%s" đã được cập nhật thành công với phát âm.';
 $lang_module['download_audio'] = 'Tải xuống âm thanh';
